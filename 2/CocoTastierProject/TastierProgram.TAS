@@ -1,0 +1,36 @@
+// program to read integer values n (n > 0) from the console
+// and, for each one, print the sum of the values from 1 to n
+
+program Test {
+
+   int i;
+   int j;
+
+   void SumUp() {
+      int sum;
+      
+      void Subtract() {
+         i := i - 1;
+      }
+      
+      void Add() {
+         if (i > 0) {
+            sum := sum + i; 
+            Subtract();
+            Add();
+         }
+      }
+      
+      sum := 0;
+      Add();
+      write sum;
+   }
+
+   void main() {
+      read i;
+      while (i > 0) {
+         SumUp();
+	  read i;
+      }
+   }
+}
