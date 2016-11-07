@@ -4,7 +4,7 @@ COMPILER Tastier
       var = 0, proc = 1, constant = 3;
 
    const int // types
-      undef = 0, integer = 1, boolean = 2;
+      undef = 0, integer = 1, boolean = 2, array = 3;
 
    public SymbolTable tab;
    public CodeGenerator gen;
@@ -377,5 +377,15 @@ ConstDecl                (. string name; int type; .)
     Ident<out name>      (. tab.NewObj(name, constant, type); .)
   } ";"
 .
+
+/*-------------------------------------------------------------------------------------------*/
+ArrayDecl                (. string name; int type; .)
+= Type<out type>
+  Ident<out name>        (. tab.NewObj(name, array, type); .)
+  "[]"
+  ";"
+
+.
+
 
 END Tastier.

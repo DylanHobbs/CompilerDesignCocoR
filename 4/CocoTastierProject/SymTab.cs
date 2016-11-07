@@ -23,7 +23,7 @@ public class Obj { // properties of declared symbol
 public class SymbolTable {
 
    const int // object kinds
-      var = 0, proc = 1, scope = 2, constant=3; 
+      var = 0, proc = 1, scope = 2, constant=3, array=4; 
 
    const int // types
       undef = 0, integer = 1, boolean = 2;
@@ -101,7 +101,8 @@ public class SymbolTable {
          case 1: return "PROC  ";
          case 2: return "SCOPE ";
          case 3: return "CONST ";
-         default: return "NOPE";
+         case 4: return "ARRAY ";
+         default: return "NOPE ";
       }
    }
 
