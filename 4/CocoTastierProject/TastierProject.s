@@ -135,6 +135,7 @@ L4
     LDR     PC, [TOP]       ; return from SumUp
 ;ADR: 0 | KIND: VAR    | TYPE: INT    | LEVEL: 1 | NAME: j | SetVal: 0
 ;ADR: 1 | KIND: VAR    | TYPE: INT    | LEVEL: 1 | NAME: sum | SetVal: 0
+;ADR: 0 | KIND: ARRAY  | TYPE: INT    | LEVEL: 1 | NAME: iamleg | SetVal: 0
 ;ADR: 0 | KIND: PROC   | TYPE: UNDEF  | LEVEL: 1 | NAME: Subtract | SetVal: 0
 ;ADR: 0 | KIND: PROC   | TYPE: UNDEF  | LEVEL: 1 | NAME: Add | SetVal: 0
 mainline

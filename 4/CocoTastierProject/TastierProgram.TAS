@@ -8,6 +8,7 @@ program Test {
 
    void SumUp() {
       int j, sum;
+      array int iamleg[];
       
       void Subtract() {
          const bool t;

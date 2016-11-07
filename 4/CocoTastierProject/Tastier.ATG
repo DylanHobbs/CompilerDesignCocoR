@@ -1,10 +1,10 @@
 COMPILER Tastier
 
    const int // object kinds
-      var = 0, proc = 1, constant = 3;
+      var = 0, proc = 1, constant = 3, array = 4;
 
    const int // types
-      undef = 0, integer = 1, boolean = 2, array = 3;
+      undef = 0, integer = 1, boolean = 2;
 
    public SymbolTable tab;
    public CodeGenerator gen;
@@ -158,7 +158,7 @@ ProcDecl<string pName>   (. Obj obj; string procName; .)
   '(' ')'
   '{'
   	 {
-     VarDecl | ConstDecl
+     VarDecl | ConstDecl | ArrayDecl
      }
 
      {
@@ -316,7 +316,7 @@ Stat                     (. int type; string name; Obj obj; int reg; .)
   ';'
 
 | '{'
-  { Stat | VarDecl | ConstDecl} //Bug aran
+  { Stat | VarDecl | ConstDecl | ArrayDecl} //Bug aran
   '}'
 .
 
@@ -326,7 +326,7 @@ Tastier                  (. string pName; .)
   = "program"
   Ident<out pName>       (. tab.OpenScope(); .)
   '{'
-  	{ VarDecl | ConstDecl }
+  	{ VarDecl | ConstDecl | ArrayDecl }
     //Stat { Stat } 
     { ProcDecl<pName> }  (. tab.CloseScope(); .)
   '}'
@@ -380,11 +380,10 @@ ConstDecl                (. string name; int type; .)
 
 /*-------------------------------------------------------------------------------------------*/
 ArrayDecl                (. string name; int type; .)
-= Type<out type>
+= "array"
+  Type<out type>
   Ident<out name>        (. tab.NewObj(name, array, type); .)
-  "[]"
-  ";"
-
+  "[];"
 .
 
 
