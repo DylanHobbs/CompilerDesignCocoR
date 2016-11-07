@@ -55,7 +55,7 @@ SubtractBody
     MOV     TOP, BP         ; reset top of stack
     LDR     BP, [TOP,#12]   ; and stack base pointers
     LDR     PC, [TOP]       ; return from Subtract
-                             ;ADR: 0 KIND: CONST  TYPE: BOOL   LEVEL: 2 NAME: t SetVal: 1
+;ADR: 0 | KIND: CONST  | TYPE: BOOL   | LEVEL: 2 | NAME: t | SetVal: 1
 ; Procedure Add
 Add
     LDR     R0, =2          ; current lexic level
@@ -133,10 +133,10 @@ L4
     MOV     TOP, BP         ; reset top of stack
     LDR     BP, [TOP,#12]   ; and stack base pointers
     LDR     PC, [TOP]       ; return from SumUp
-                             ;ADR: 0 KIND: VAR    TYPE: INT    LEVEL: 1 NAME: j SetVal: 0
-                             ;ADR: 1 KIND: VAR    TYPE: INT    LEVEL: 1 NAME: sum SetVal: 0
-                             ;ADR: 0 KIND: PROC   TYPE: UNDEF  LEVEL: 1 NAME: Subtract SetVal: 0
-                             ;ADR: 0 KIND: PROC   TYPE: UNDEF  LEVEL: 1 NAME: Add SetVal: 0
+;ADR: 0 | KIND: VAR    | TYPE: INT    | LEVEL: 1 | NAME: j | SetVal: 0
+;ADR: 1 | KIND: VAR    | TYPE: INT    | LEVEL: 1 | NAME: sum | SetVal: 0
+;ADR: 0 | KIND: PROC   | TYPE: UNDEF  | LEVEL: 1 | NAME: Subtract | SetVal: 0
+;ADR: 0 | KIND: PROC   | TYPE: UNDEF  | LEVEL: 1 | NAME: Add | SetVal: 0
 mainline
     ADD     R0, PC, #4      ; string address
     BL      TastierPrintString
@@ -169,10 +169,10 @@ L8
 L7
 stopTest
     B       stopTest
-                             ;ADR: 0 KIND: VAR    TYPE: INT    LEVEL: 0 NAME: i SetVal: 0
-                             ;ADR: 1 KIND: CONST  TYPE: INT    LEVEL: 0 NAME: c SetVal: 1
-                             ;ADR: 0 KIND: PROC   TYPE: UNDEF  LEVEL: 0 NAME: SumUp SetVal: 0
-                             ;ADR: 0 KIND: PROC   TYPE: UNDEF  LEVEL: 0 NAME: main SetVal: 0
+;ADR: 0 | KIND: VAR    | TYPE: INT    | LEVEL: 0 | NAME: i | SetVal: 0
+;ADR: 1 | KIND: CONST  | TYPE: INT    | LEVEL: 0 | NAME: c | SetVal: 1
+;ADR: 0 | KIND: PROC   | TYPE: UNDEF  | LEVEL: 0 | NAME: SumUp | SetVal: 0
+;ADR: 0 | KIND: PROC   | TYPE: UNDEF  | LEVEL: 0 | NAME: main | SetVal: 0
 
 ; Subroutine enter
 ; Construct stack frame for procedure

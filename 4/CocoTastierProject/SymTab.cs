@@ -69,7 +69,13 @@ public class SymbolTable {
          string kind = int2Kind(current.kind);
          string type = int2Type(current.type);
 
-         Console.WriteLine("                             ;ADR: " + current.adr + " KIND: " + kind + " TYPE: " + type + " LEVEL: " + current.level + " NAME: " + current.name + " SetVal: " + current.setVal);
+         Console.WriteLine(";ADR: " 
+            + current.adr + " | KIND: " 
+            + kind + " | TYPE: " 
+            + type + " | LEVEL: " 
+            + current.level + " | NAME: " 
+            + current.name + " | SetVal: " 
+            + current.setVal);
          current = current.next;
       } 
       // update next available address in enclosing scope
