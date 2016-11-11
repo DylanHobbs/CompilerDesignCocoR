@@ -34,12 +34,30 @@ Subtract
     BL      enter           ; build new stack frame
     B       SubtractBody
 SubtractBody
-    LDR     R5, =1
+    LDR     R5, =10
     MOV     R0, BP          ; load current base pointer
     LDR     R0, [R0,#8]
     ADD     R0, R0, #16
     LDR     R1, =2
     STR     R5, [R0, R1, LSL #2]        ; arr
+    LDR     R5, =20
+    MOV     R0, BP          ; load current base pointer
+    LDR     R0, [R0,#8]
+    ADD     R0, R0, #16
+    LDR     R1, =3
+    STR     R5, [R0, R1, LSL #2]        ; arr
+    LDR     R5, =30
+    MOV     R0, BP          ; load current base pointer
+    LDR     R0, [R0,#8]
+    ADD     R0, R0, #16
+    LDR     R1, =4
+    STR     R5, [R0, R1, LSL #2]        ; arr
+    MOV     R0, BP          ; load current base pointer
+    LDR     R0, [R0,#8]
+    LDR     R0, [R0,#8]
+    ADD     R0, R0, #16
+    LDR     R1, =2
+    LDR     R0, [R0, R1, LSL #2]        ; arr
     MOVS    R5, #1          ; true
     ADD     R0, BP, #16
     LDR     R1, =1
@@ -178,7 +196,7 @@ L7
 stopTest
     B       stopTest
 ;ADR: 0 | KIND: VAR    | TYPE: INT    | LEVEL: 0 | NAME: i | SetVal: 0
-;ADR: 1 | KIND: CONST  | TYPE: INT    | LEVEL: 0 | NAME: c | SetVal: 0
+;ADR: 1 | KIND: CONST  | TYPE: INT    | LEVEL: 0 | NAME: c | SetVal: 1
 ;ADR: 0 | KIND: PROC   | TYPE: UNDEF  | LEVEL: 0 | NAME: SumUp | SetVal: 0
 ;ADR: 0 | KIND: PROC   | TYPE: UNDEF  | LEVEL: 0 | NAME: main | SetVal: 0
 
