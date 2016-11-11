@@ -206,8 +206,21 @@ SimExpr<out int reg, out int type>    (. int typeR, regR; Op op; .)
 
 /*-------------------------------------------------------------------------------------------*/
 
-Stat                     (. int type; string name; Obj obj; int reg; .)
+Stat                     (. int type; string name; Obj obj; int reg=0; int index=0; string RHSArray;.)
 = Ident<out name>        (. obj = tab.Find(name); .)
+([
+  "["
+     number             (. 
+                          index = Convert.ToInt32(t.val);
+                          if(index >= obj.size){
+                            SemErr(obj.name + ": Index [" + index + "] out of bounds[" + obj.size + "]");
+                            return;
+                          }
+                        .)
+  "]"
+])
+
+
   ( ":="                 (.
                             if(obj.kind == constant){
                               if(obj.setVal == 1){
@@ -221,13 +234,55 @@ Stat                     (. int type; string name; Obj obj; int reg; .)
                             if (obj.kind == proc)
                                SemErr("cannot assign to procedure");
                          .)
-    Expr<out reg, out type> ';'   
+    (Expr<out reg, out type>   
                          (.
                             if (type == obj.type)
                                if (obj.level == 0)
-                                  gen.StoreGlobal(reg, obj.adr, name);
-                               else gen.StoreLocal(reg, tab.curLevel-obj.level, obj.adr, name);
+                                  gen.StoreGlobal(reg, obj.adr + index, name);
+                               else gen.StoreLocal(reg, tab.curLevel-obj.level, obj.adr + index, name);
                          .)
+//Array on RHS of expr
+| "["                  (. int RHSIndex = 0; .)
+    number             (. RHSIndex = Convert.ToInt32(t.val); .)
+  "]"
+  Ident<out RHSArray>
+                       (.
+                          Obj aObj = tab.Find(RHSArray);
+                          if(aObj.type != obj.type){
+                            SemErr("Cannot assign type " + obj.type + " to array type " + aObj.type);
+                            //return;
+                          }
+
+                          if(RHSIndex < 0 || RHSIndex > aObj.size){
+                            SemErr(aObj.name + ": Index [" + RHSIndex + "] out of bounds[" + obj.size + "]");
+                            //return;
+                          }
+
+                          //bools
+                          if (obj.type == boolean){
+                            //Global
+                            if (obj.level == 0){ 
+                              gen.StoreGlobal(reg, obj.adr + RHSIndex, name);
+                            }
+                            //Local
+                             else{
+                               gen.StoreLocal(reg, tab.curLevel-obj.level, obj.adr + RHSIndex, name);
+                             } 
+                          } else{
+                           //Global var or const
+                            if(aObj.level == 0){
+                              gen.LoadGlobal(reg, aObj.adr + RHSIndex, RHSArray);
+                            }
+                            //Local
+                            else{
+                              gen.LoadLocal(reg, tab.curLevel-obj.level, aObj.adr + RHSIndex, RHSArray);
+                            }
+                          }
+                          
+                       .)
+   )
+    ";"
+
   | '(' ')' ';'          (.
                             if (obj.kind == proc)
                                gen.Call(name);
@@ -372,13 +427,11 @@ ConstDecl                (. string name; int type; .)
 .
 
 /*-------------------------------------------------------------------------------------------*/
-ArrayDecl                (. string name; int type; int kind; int size; Obj obj; int reg;.)
+ArrayDecl                (. string name; int type; int kind; int size; Obj obj;.)
 = "array"                (. kind = array; .)
   Type<out type>
   Ident<out name>     
-  "[]"
   [
-    ":="
     "["
     number               (. size = Convert.ToInt32(t.val);
                             obj = tab.NewObj(name, kind, type, size);

@@ -8,6 +8,7 @@ namespace Tastier {
 
 public class Obj { // properties of declared symbol
    public string name; // its name
+   public int size;
    public int setVal;  // Constant Value set or not
    public int kind;    // var, proc or scope
    public int type;    // its type if var (undef for proc)
@@ -34,6 +35,8 @@ public class SymbolTable {
    public Obj topScope; // topmost procedure scope
    public int curLevel; // nesting level of current scope
    public Obj undefObj; // object node for erroneous symbols
+
+   public bool mainPresent;
    
    Parser parser;
    
@@ -47,6 +50,7 @@ public class SymbolTable {
       undefObj.level = 0;
       undefObj.adr = 0;
       undefObj.next = null;
+      undefObj.size = 0;
       this.parser = parser; 
    }
 
@@ -79,11 +83,32 @@ public class SymbolTable {
          current = current.next;
       } 
       // update next available address in enclosing scope
-      if(topScope.outer != null)
-         topScope.outer.nextAdr = topScope.nextAdr;
+      //if(topScope.outer != null)
+         //topScope.outer.nextAdr = topScope.nextAdr;
       // lexic level remains unchanged
       topScope = topScope.outer;
       curLevel--;
+   }
+
+   // open new sub-scope and make it the current scope (topScope)
+   public void OpenSubScope() {
+   // lexic level remains unchanged
+      Obj scop = new Obj();
+      scop.name = "";
+      scop.kind = scope;
+      scop.outer = topScope;
+      scop.locals = null;
+   // next available address in stack frame remains unchanged
+      scop.nextAdr = topScope.nextAdr;
+      topScope = scop;
+   }
+
+// close current sub-scope
+   public void CloseSubScope() {
+   // update next available address in enclosing scope
+      topScope.outer.nextAdr = topScope.nextAdr;
+   // lexic level remains unchanged
+      topScope = topScope.outer;
    }
 
    public string int2Type(int type_trigger ){
@@ -107,13 +132,14 @@ public class SymbolTable {
    }
 
 // create new object node in current scope
-   public Obj NewObj(string name, int kind, int type, int size=0) {
+   public Obj NewObj(string name, int kind, int type, int size=1) {
       Obj p, last; 
       Obj obj = new Obj();
       obj.name = name; obj.kind = kind;
       obj.type = type; obj.level = curLevel; 
       obj.next = null;
       obj.setVal = unsett;
+      obj.size = size;
       p = topScope.locals; last = null;
       while (p != null) { 
          if (p.name == name)
@@ -135,10 +161,6 @@ public class SymbolTable {
       }
       return obj;
    }
-
-
-//obj.adr = topScope.nextAdr;
-//topScope.nextAdr += size;
 
 // search for name in open scopes and return its object node
    public Obj Find(string name) {

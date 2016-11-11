@@ -30,15 +30,20 @@ main
 ; Procedure Subtract
 Subtract
     LDR     R0, =2          ; current lexic level
-    LDR     R1, =1          ; number of local variables
+    LDR     R1, =2          ; number of local variables
     BL      enter           ; build new stack frame
     B       SubtractBody
 SubtractBody
-    MOVS    R5, #1          ; true
-    STR     R5, [BP,#16]    ; t
     LDR     R5, =1
-    LDR     R0, =1
-    STR     R5, [R4, R0, LSL #2]        ; c
+    MOV     R0, BP          ; load current base pointer
+    LDR     R0, [R0,#8]
+    ADD     R0, R0, #16
+    LDR     R1, =2
+    STR     R5, [R0, R1, LSL #2]        ; arr
+    MOVS    R5, #1          ; true
+    ADD     R0, BP, #16
+    LDR     R1, =1
+    STR     R5, [R0, R1, LSL #2]        ; t
     LDR     R0, =1
     LDR     R5, [R4, R0, LSL #2]        ; c
     LDR     R6, =1
@@ -55,7 +60,8 @@ SubtractBody
     MOV     TOP, BP         ; reset top of stack
     LDR     BP, [TOP,#12]   ; and stack base pointers
     LDR     PC, [TOP]       ; return from Subtract
-;ADR: 0 | KIND: CONST  | TYPE: BOOL   | LEVEL: 2 | NAME: t | SetVal: 1
+;ADR: 0 | KIND: VAR    | TYPE: INT    | LEVEL: 2 | NAME: test | SetVal: 0
+;ADR: 1 | KIND: CONST  | TYPE: BOOL   | LEVEL: 2 | NAME: t | SetVal: 1
 ; Procedure Add
 Add
     LDR     R0, =2          ; current lexic level
@@ -97,7 +103,7 @@ L2
 ; Procedure SumUp
 SumUp
     LDR     R0, =1          ; current lexic level
-    LDR     R1, =0          ; number of local variables
+    LDR     R1, =7          ; number of local variables
     BL      enter           ; build new stack frame
     B       SumUpBody
 SumUpBody
@@ -135,8 +141,8 @@ L4
     LDR     PC, [TOP]       ; return from SumUp
 ;ADR: 0 | KIND: VAR    | TYPE: INT    | LEVEL: 1 | NAME: j | SetVal: 0
 ;ADR: 1 | KIND: VAR    | TYPE: INT    | LEVEL: 1 | NAME: sum | SetVal: 0
-;ADR: 2 | KIND: ARRAY  | TYPE: INT    | LEVEL: 1 | NAME: iamleg | SetVal: 0
-;ADR: 5 | KIND: VAR    | TYPE: INT    | LEVEL: 1 | NAME: test | SetVal: 0
+;ADR: 2 | KIND: ARRAY  | TYPE: INT    | LEVEL: 1 | NAME: arr | SetVal: 0
+;ADR: 6 | KIND: VAR    | TYPE: INT    | LEVEL: 1 | NAME: test | SetVal: 0
 ;ADR: 0 | KIND: PROC   | TYPE: UNDEF  | LEVEL: 1 | NAME: Subtract | SetVal: 0
 ;ADR: 0 | KIND: PROC   | TYPE: UNDEF  | LEVEL: 1 | NAME: Add | SetVal: 0
 mainline
@@ -172,7 +178,7 @@ L7
 stopTest
     B       stopTest
 ;ADR: 0 | KIND: VAR    | TYPE: INT    | LEVEL: 0 | NAME: i | SetVal: 0
-;ADR: 1 | KIND: CONST  | TYPE: INT    | LEVEL: 0 | NAME: c | SetVal: 1
+;ADR: 1 | KIND: CONST  | TYPE: INT    | LEVEL: 0 | NAME: c | SetVal: 0
 ;ADR: 0 | KIND: PROC   | TYPE: UNDEF  | LEVEL: 0 | NAME: SumUp | SetVal: 0
 ;ADR: 0 | KIND: PROC   | TYPE: UNDEF  | LEVEL: 0 | NAME: main | SetVal: 0
 

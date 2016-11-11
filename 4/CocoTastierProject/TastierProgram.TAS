@@ -7,14 +7,18 @@ program Test {
    const int c;
 
    void SumUp() {
-      int j, sum;
-      array int iamleg[] := [3];
+      int j; 
+      int sum;
+      array int arr[4];
       int test;
-      
+
       void Subtract() {
+         int test;
          const bool t;
+         arr[0] := 1;
+         //c := [0]arr;
+
          t := true;
-         c := 1;
          sum := c + 1;
          i := i - 1;
 
