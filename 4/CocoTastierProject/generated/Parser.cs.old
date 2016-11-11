@@ -36,7 +36,7 @@ public class Parser {
 	public const int _number = 1;
 	public const int _ident = 2;
 	public const int _string = 3;
-	public const int maxT = 39;
+	public const int maxT = 41;
 
 	const bool T = true;
 	const bool x = false;
@@ -126,7 +126,7 @@ const int // object kinds
 		} else if (la.kind == 5) {
 			Get();
 			op = Op.SUB; 
-		} else SynErr(40);
+		} else SynErr(42);
 	}
 
 	void Expr(out int reg, out int type) {
@@ -190,7 +190,7 @@ const int // object kinds
 			op = Op.GEQ; 
 			break;
 		}
-		default: SynErr(41); break;
+		default: SynErr(43); break;
 		}
 	}
 
@@ -253,7 +253,7 @@ const int // object kinds
 			Expect(9);
 			break;
 		}
-		default: SynErr(42); break;
+		default: SynErr(44); break;
 		}
 	}
 
@@ -285,7 +285,7 @@ const int // object kinds
 				Get();
 			}
 			op = Op.MOD; 
-		} else SynErr(43);
+		} else SynErr(45);
 	}
 
 	void ProcDecl(string pName) {
@@ -361,12 +361,22 @@ const int // object kinds
 	}
 
 	void ArrayDecl() {
-		string name; int type; 
+		string name; int type; int kind; int size; Obj obj; int reg;
 		Expect(37);
+		kind = array; 
 		Type(out type);
 		Ident(out name);
-		tab.NewObj(name, array, type); 
 		Expect(38);
+		if (la.kind == 24) {
+			Get();
+			Expect(39);
+			Expect(1);
+			size = Convert.ToInt32(t.val);
+			obj = tab.NewObj(name, kind, type, size);
+			
+			Expect(40);
+		}
+		Expect(25);
 	}
 
 	void Stat() {
@@ -403,7 +413,7 @@ const int // object kinds
 				  gen.Call(name);
 				else SemErr("object is not a procedure");
 				
-			} else SynErr(44);
+			} else SynErr(46);
 			break;
 		}
 		case 26: {
@@ -477,7 +487,7 @@ const int // object kinds
 			} else if (la.kind == 3) {
 				String(out text);
 				gen.WriteString(text); 
-			} else SynErr(45);
+			} else SynErr(47);
 			Expect(25);
 			break;
 		}
@@ -510,7 +520,7 @@ const int // object kinds
 			Expect(17);
 			break;
 		}
-		default: SynErr(46); break;
+		default: SynErr(48); break;
 		}
 	}
 
@@ -557,7 +567,7 @@ const int // object kinds
 		} else if (la.kind == 34) {
 			Get();
 			type = boolean; 
-		} else SynErr(47);
+		} else SynErr(49);
 	}
 
 
@@ -572,13 +582,13 @@ const int // object kinds
 	}
 	
 	static readonly bool[,] set = {
-		{T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x},
-		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,T, T,T,T,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x},
-		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,T,x, T,T,x,x, x},
-		{x,x,T,x, x,x,x,x, x,x,x,x, x,x,x,x, T,x,x,x, x,x,x,x, x,x,T,x, T,T,T,T, x,x,x,x, x,x,x,x, x},
-		{x,T,T,x, x,T,T,T, T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x},
-		{x,x,T,x, x,x,x,x, x,x,x,x, x,x,x,x, T,x,x,x, x,x,x,x, x,x,T,x, T,T,T,T, x,T,T,x, T,T,x,x, x},
-		{x,x,x,x, x,x,x,x, x,x,T,T, T,T,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x}
+		{T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x},
+		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,T, T,T,T,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x},
+		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,T,x, T,T,x,x, x,x,x},
+		{x,x,T,x, x,x,x,x, x,x,x,x, x,x,x,x, T,x,x,x, x,x,x,x, x,x,T,x, T,T,T,T, x,x,x,x, x,x,x,x, x,x,x},
+		{x,T,T,x, x,T,T,T, T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x},
+		{x,x,T,x, x,x,x,x, x,x,x,x, x,x,x,x, T,x,x,x, x,x,x,x, x,x,T,x, T,T,T,T, x,T,T,x, T,T,x,x, x,x,x},
+		{x,x,x,x, x,x,x,x, x,x,T,T, T,T,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x}
 
 	};
 } // end Parser
@@ -630,16 +640,18 @@ public class Errors {
 			case 35: s = "\",\" expected"; break;
 			case 36: s = "\"const\" expected"; break;
 			case 37: s = "\"array\" expected"; break;
-			case 38: s = "\"[];\" expected"; break;
-			case 39: s = "??? expected"; break;
-			case 40: s = "invalid AddOp"; break;
-			case 41: s = "invalid RelOp"; break;
-			case 42: s = "invalid Primary"; break;
-			case 43: s = "invalid MulOp"; break;
-			case 44: s = "invalid Stat"; break;
-			case 45: s = "invalid Stat"; break;
+			case 38: s = "\"[]\" expected"; break;
+			case 39: s = "\"[\" expected"; break;
+			case 40: s = "\"]\" expected"; break;
+			case 41: s = "??? expected"; break;
+			case 42: s = "invalid AddOp"; break;
+			case 43: s = "invalid RelOp"; break;
+			case 44: s = "invalid Primary"; break;
+			case 45: s = "invalid MulOp"; break;
 			case 46: s = "invalid Stat"; break;
-			case 47: s = "invalid Type"; break;
+			case 47: s = "invalid Stat"; break;
+			case 48: s = "invalid Stat"; break;
+			case 49: s = "invalid Type"; break;
 
 			default: s = "error " + n; break;
 		}

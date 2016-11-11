@@ -107,7 +107,7 @@ public class SymbolTable {
    }
 
 // create new object node in current scope
-   public Obj NewObj(string name, int kind, int type) {
+   public Obj NewObj(string name, int kind, int type, int size=0) {
       Obj p, last; 
       Obj obj = new Obj();
       obj.name = name; obj.kind = kind;
@@ -124,8 +124,21 @@ public class SymbolTable {
          topScope.locals = obj; else last.next = obj;
       if (kind == var || kind == constant)
          obj.adr = topScope.nextAdr++;
+
+      //Making space space for array by adjusting the nextAdr space.
+      //Access via: (obj)array.adr+index;
+      //TODO 0 index?
+      if(kind == array)
+      {
+        obj.adr = topScope.nextAdr;
+        topScope.nextAdr += size;
+      }
       return obj;
    }
+
+
+//obj.adr = topScope.nextAdr;
+//topScope.nextAdr += size;
 
 // search for name in open scopes and return its object node
    public Obj Find(string name) {

@@ -8,17 +8,17 @@ program Test {
 
    void SumUp() {
       int j, sum;
-      array int iamleg[];
+      array int iamleg[] := [3];
+      int test;
       
       void Subtract() {
          const bool t;
-         //iamleg := int[5];
          t := true;
          c := 1;
          sum := c + 1;
          i := i - 1;
 
-         //Uncomment following lines to break code 
+         //Uncomment following lines to break code. Assigning to contasts twice.
          //c := 2;
          //t := false;
       }

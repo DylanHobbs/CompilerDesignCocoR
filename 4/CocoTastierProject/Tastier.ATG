@@ -372,12 +372,41 @@ ConstDecl                (. string name; int type; .)
 .
 
 /*-------------------------------------------------------------------------------------------*/
-ArrayDecl                (. string name; int type; .)
-= "array"
+ArrayDecl                (. string name; int type; int kind; int size; Obj obj; int reg;.)
+= "array"                (. kind = array; .)
   Type<out type>
-  Ident<out name>        (. tab.NewObj(name, array, type); .)
-  "[];"
+  Ident<out name>     
+  "[]"
+  [
+    ":="
+    "["
+    number               (. size = Convert.ToInt32(t.val);
+                            obj = tab.NewObj(name, kind, type, size);
+                         .)
+    "]"
+  ]
+  ";"
 .
+
+/*
+Modify to allow declaration and instansiation speratly.
+Add in new mthod to add distance to already existing obj.
+ArrayDecl                (. string name; int type; int kind; int size; Obj obj; int reg;.)
+= "array"                (. kind = array; .)
+  Type<out type>
+  Ident<out name>        (. obj = tab.NewObj(name, array, type); .)
+  "[]"
+  [
+    ":="
+    "["
+    number               (. size = Convert.ToInt32(t.val);
+                            obj = tab.NewObj(name, kind, type, size);
+                         .)
+    "]"
+  ]
+  ";"
+.
+*/
 
 
 END Tastier.
