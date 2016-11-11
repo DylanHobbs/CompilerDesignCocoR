@@ -242,7 +242,7 @@ Stat                     (. int type; string name; Obj obj; int reg=0; int index
                                else gen.StoreLocal(reg, tab.curLevel-obj.level, obj.adr + index, name);
                          .)
 //Array on RHS of expr
-| "["                  (. int RHSIndex = 0; .)
+( "["                  (. int RHSIndex = 0; .)
     number             (. RHSIndex = Convert.ToInt32(t.val); .)
   "]"
   Ident<out RHSArray>
@@ -280,7 +280,7 @@ Stat                     (. int type; string name; Obj obj; int reg=0; int index
                           }
                           
                        .)
-   )
+   ))
     ";"
 
   | '(' ')' ';'          (.
