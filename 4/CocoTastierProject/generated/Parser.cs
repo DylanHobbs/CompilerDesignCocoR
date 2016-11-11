@@ -129,15 +129,12 @@ const int // object kinds
 		} else SynErr(40);
 	}
 
-	void Expr(out int reg,        // load value of Expr into register
-out int type) {
+	void Expr(out int reg, out int type) {
 		int typeR, regR; Op op; 
-		SimExpr(out reg,
-out type);
+		SimExpr(out reg, out type);
 		if (StartOf(1)) {
 			RelOp(out op);
-			SimExpr(out regR,
-out typeR);
+			SimExpr(out regR, out typeR);
 			if (type == typeR) {
 			  type = boolean;
 			  gen.RelOp(op, reg, regR);
@@ -150,12 +147,10 @@ out typeR);
 
 	void SimExpr(out int reg, out int type) {
 		int typeR, regR; Op op; 
-		Term(out reg,
-out type);
+		Term(out reg, out type);
 		while (la.kind == 4 || la.kind == 5) {
 			AddOp(out op);
-			Term(out regR,
-out typeR);
+			Term(out regR, out typeR);
 			if (type == integer && typeR == integer)
 			  gen.AddOp(op, reg, regR);
 			else SemErr("integer type expected");
@@ -199,8 +194,7 @@ out typeR);
 		}
 	}
 
-	void Primary(out int reg,     // load Primary into register
-out int type) {
+	void Primary(out int reg, out int type) {
 		int n; Obj obj; string name; 
 		type = undef;
 		reg = gen.GetRegister();
@@ -232,8 +226,7 @@ out int type) {
 		}
 		case 5: {
 			Get();
-			Primary(out reg,
-out type);
+			Primary(out reg, out type);
 			if (type == integer)
 			  gen.NegateValue(reg);
 			else SemErr("integer type expected");
@@ -256,8 +249,7 @@ out type);
 		}
 		case 8: {
 			Get();
-			Expr(out reg,
-out type);
+			Expr(out reg, out type);
 			Expect(9);
 			break;
 		}
@@ -323,11 +315,11 @@ out type);
 			ProcDecl(pName);
 		}
 		if (procName == "main")
-		      gen.Label("mainline","");
-		   else {
-		      gen.Enter(procName, tab.curLevel, tab.topScope.nextAdr); 
-		      gen.Label(procName, "Body"); 
-		   }
+		   gen.Label("mainline","");
+		else {
+		   gen.Enter(procName, tab.curLevel, tab.topScope.nextAdr); 
+		   gen.Label(procName, "Body"); 
+		}
 		
 		Stat();
 		while (StartOf(3)) {
@@ -396,8 +388,7 @@ out type);
 				if (obj.kind == proc)
 				  SemErr("cannot assign to procedure");
 				
-				Expr(out reg,
-out type);
+				Expr(out reg, out type);
 				Expect(25);
 				if (type == obj.type)
 				  if (obj.level == 0)
@@ -418,8 +409,7 @@ out type);
 		case 26: {
 			Get();
 			int l1, l2; l1 = 0; 
-			Expr(out reg,
-out type);
+			Expr(out reg, out type);
 			if (type == boolean) {
 			  l1 = gen.NewLabel();
 			  gen.BranchFalse(l1);
@@ -444,8 +434,7 @@ out type);
 			l1 = gen.NewLabel();
 			gen.Label(l1); l2=0;
 			
-			Expr(out reg,
-out type);
+			Expr(out reg, out type);
 			if (type == boolean) {
 			  l2 = gen.NewLabel();
 			  gen.BranchFalse(l2);
@@ -477,8 +466,7 @@ out type);
 			Get();
 			string text; 
 			if (StartOf(4)) {
-				Expr(out reg,
-out type);
+				Expr(out reg, out type);
 				switch (type) {
 				  case integer: gen.WriteInteger(reg, false);
 				                break; 
@@ -495,8 +483,7 @@ out type);
 		}
 		case 31: {
 			Get();
-			Expr(out reg,
-out type);
+			Expr(out reg, out type);
 			switch (type) {
 			  case integer: gen.WriteInteger(reg, true);
 			                break;
@@ -527,15 +514,12 @@ out type);
 		}
 	}
 
-	void Term(out int reg,        // load value of Term into register
-out int type) {
+	void Term(out int reg, out int type) {
 		int typeR, regR; Op op; 
-		Primary(out reg,
-out type);
+		Primary(out reg, out type);
 		while (StartOf(6)) {
 			MulOp(out op);
-			Primary(out regR,
-out typeR);
+			Primary(out regR, out typeR);
 			if (type == integer && typeR == integer)
 			  gen.MulOp(op, reg, regR);
 			else SemErr("integer type expected");

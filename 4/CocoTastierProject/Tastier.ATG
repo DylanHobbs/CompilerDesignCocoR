@@ -50,14 +50,12 @@ AddOp<out Op op>
 .
 
 /*-------------------------------------------------------------------------------------------*/
-
-Expr<out int reg,        // load value of Expr into register
-     out int type>       (. int typeR, regR; Op op; .)
-  = SimExpr<out reg,
-            out type>
+// load value of Expr into register
+Expr<out int reg, out int type> 
+                         (. int typeR, regR; Op op; .)
+  = SimExpr<out reg, out type>
   [ RelOp<out op>
-    SimExpr<out regR,
-            out typeR>   (.
+    SimExpr<out regR, out typeR>   (.
                             if (type == typeR) {
                                type = boolean;
                                gen.RelOp(op, reg, regR);
@@ -68,9 +66,9 @@ Expr<out int reg,        // load value of Expr into register
 .
 
 /*-------------------------------------------------------------------------------------------*/
-
-Primary<out int reg,     // load Primary into register
-        out int type>    (. int n; Obj obj; string name; .)
+ // load Primary into register
+Primary<out int reg, out int type> 
+                         (. int n; Obj obj; string name; .)
 =                        (.
                             type = undef;
                             reg = gen.GetRegister();
@@ -96,8 +94,8 @@ Primary<out int reg,     // load Primary into register
                          .)
 
   | '-'
-    Primary<out reg,
-            out type>     (.
+    Primary<out reg, out type>     
+                         (.
                             if (type == integer)
                                gen.NegateValue(reg);
                             else SemErr("integer type expected");
@@ -114,8 +112,7 @@ Primary<out int reg,     // load Primary into register
                          .)
 
   | '('
-    Expr<out reg,
-         out type>
+    Expr<out reg, out type>
     ')'
 
   )
@@ -157,14 +154,14 @@ ProcDecl<string pName>   (. Obj obj; string procName; .)
                          .)
   '(' ')'
   '{'
-  	 {
+     {
      VarDecl | ConstDecl | ArrayDecl
      }
 
      {
      ProcDecl<pName>
      }      
-                  			(. if (procName == "main")
+                        (. if (procName == "main")
                                gen.Label("mainline","");
                             else {
                                gen.Enter(procName, tab.curLevel, tab.topScope.nextAdr); 
@@ -194,13 +191,12 @@ RelOp<out Op op>
 .
 
 /*-------------------------------------------------------------------------------------------*/
-
-SimExpr<out int reg, out int type>    (. int typeR, regR; Op op; .) //load value of SimExpr into register
-= Term<out reg,
-       out type>
+//load value of SimExpr into register
+SimExpr<out int reg, out int type>    (. int typeR, regR; Op op; .) 
+= Term<out reg, out type>
   { AddOp<out op>
-    Term<out regR,
-         out typeR>      (.
+    Term<out regR, out typeR>      
+                         (.
                             if (type == integer && typeR == integer)
                                gen.AddOp(op, reg, regR);
                             else SemErr("integer type expected");
@@ -225,8 +221,8 @@ Stat                     (. int type; string name; Obj obj; int reg; .)
                             if (obj.kind == proc)
                                SemErr("cannot assign to procedure");
                          .)
-    Expr<out reg,
-         out type> ';'   (.
+    Expr<out reg, out type> ';'   
+                         (.
                             if (type == obj.type)
                                if (obj.level == 0)
                                   gen.StoreGlobal(reg, obj.adr, name);
@@ -240,8 +236,8 @@ Stat                     (. int type; string name; Obj obj; int reg; .)
   )
 
 | "if"                   (. int l1, l2; l1 = 0; .)
-  Expr<out reg,
-       out type>         (.
+  Expr<out reg, out type>         
+                         (.
                             if (type == boolean) {
                                l1 = gen.NewLabel();
                                gen.BranchFalse(l1);
@@ -262,8 +258,8 @@ Stat                     (. int type; string name; Obj obj; int reg; .)
                             l1 = gen.NewLabel();
                             gen.Label(l1); l2=0;
                          .)
-  Expr<out reg,
-       out type>         (.
+  Expr<out reg, out type>         
+                         (.
                             if (type == boolean) {
                                l2 = gen.NewLabel();
                                gen.BranchFalse(l2);
@@ -289,8 +285,8 @@ Stat                     (. int type; string name; Obj obj; int reg; .)
 
 | "write"                (. string text; .)
   (
-    Expr<out reg,
-         out type>       (.
+    Expr<out reg, out type>       
+                          (.
                             switch (type) {
                                case integer: gen.WriteInteger(reg, false);
                                              break; 
@@ -304,8 +300,8 @@ Stat                     (. int type; string name; Obj obj; int reg; .)
 
 | "writeln"
   // note - for strings use write with \n in text
-  Expr<out reg,
-       out type>           (.
+  Expr<out reg, out type>          
+                           (.
                               switch (type) {
                                  case integer: gen.WriteInteger(reg, true);
                                                break;
@@ -326,21 +322,18 @@ Tastier                  (. string pName; .)
   = "program"
   Ident<out pName>       (. tab.OpenScope(); .)
   '{'
-  	{ VarDecl | ConstDecl | ArrayDecl }
+    { VarDecl | ConstDecl | ArrayDecl }
     //Stat { Stat } 
     { ProcDecl<pName> }  (. tab.CloseScope(); .)
   '}'
 .
 
 /*-------------------------------------------------------------------------------------------*/
-
-Term<out int reg,        // load value of Term into register
-     out int type>       (. int typeR, regR; Op op; .)
-  = Primary<out reg,
-            out type>
+// load value of Term into register
+Term<out int reg, out int type> (. int typeR, regR; Op op; .)
+  = Primary<out reg, out type>
   { MulOp<out op>
-    Primary<out regR,
-            out typeR>
+    Primary<out regR, out typeR>
                          (.
                             if (type == integer && typeR == integer)
                                gen.MulOp(op, reg, regR);

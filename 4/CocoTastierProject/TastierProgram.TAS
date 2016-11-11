@@ -12,6 +12,7 @@ program Test {
       
       void Subtract() {
          const bool t;
+         //iamleg := int[5];
          t := true;
          c := 1;
          sum := c + 1;
