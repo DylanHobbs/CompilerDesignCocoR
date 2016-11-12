@@ -1,4 +1,5 @@
-CSHARPCOMPILER = dmcs
+#CSHARPCOMPILER = dmcs
+CSHARPCOMPILER = mcs
 
 build: Tastier.ATG
 	mkdir -p generated
