@@ -10,15 +10,14 @@ program Test {
       int j; 
       int sum;
       array int arr[4];
-      int test;
 
       void Subtract() {
-         int test;
          const bool t;
          arr[0] := 10;
          arr[1] := 20;
          arr[2] := 30;
-         c := [0]arr;
+         c := !arr[0];
+         sum := !arr[1];
 
          t := true;
          sum := c + 1;
