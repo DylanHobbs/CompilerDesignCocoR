@@ -281,7 +281,7 @@ Stat                     (. int type; string name; Obj obj; int reg=0; int index
                           }
                           
                        .)
-   ))
+   )
     ";"
 
   | '(' ')' ';'          (.
