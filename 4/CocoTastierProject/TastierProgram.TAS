@@ -9,6 +9,7 @@ program Test {
    void SumUp() {
       int j; 
       int sum;
+      int a;
       array int arr[4];
 
       void Subtract() {
@@ -16,8 +17,12 @@ program Test {
          arr[0] := 10;
          arr[1] := 20;
          arr[2] := 30;
-         c := !arr[0];
-         sum := !arr[1];
+         c := !arr[2];
+         sum := !arr[3];
+         a := !arr[4];
+
+         write c;
+         write sum;
 
          t := true;
          sum := c + 1;

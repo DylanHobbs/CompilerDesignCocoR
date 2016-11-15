@@ -208,7 +208,7 @@ SimExpr<out int reg, out int type>    (. int typeR, regR; Op op; .)
 
 Stat                     (. int type; string name; Obj obj; int reg=0; int index=0; string RHSArray;.)
 = Ident<out name>        (. obj = tab.Find(name); .)
-([
+[
   "["
      number             (. 
                           index = Convert.ToInt32(t.val);
@@ -218,7 +218,7 @@ Stat                     (. int type; string name; Obj obj; int reg=0; int index
                           }
                         .)
   "]"
-])
+]
 
 
   ( ":="                 (.

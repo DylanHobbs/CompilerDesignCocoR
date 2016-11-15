@@ -9,31 +9,47 @@ SubtractBody
     MOV     R0, BP          ; load current base pointer
     LDR     R0, [R0,#8]
     ADD     R0, R0, #16
-    LDR     R1, =2
+    LDR     R1, =3
     STR     R5, [R0, R1, LSL #2]        ; arr
     LDR     R5, =20
     MOV     R0, BP          ; load current base pointer
     LDR     R0, [R0,#8]
     ADD     R0, R0, #16
-    LDR     R1, =3
+    LDR     R1, =4
     STR     R5, [R0, R1, LSL #2]        ; arr
     LDR     R5, =30
     MOV     R0, BP          ; load current base pointer
     LDR     R0, [R0,#8]
     ADD     R0, R0, #16
-    LDR     R1, =4
+    LDR     R1, =5
     STR     R5, [R0, R1, LSL #2]        ; arr
     MOV     R0, BP          ; load current base pointer
     LDR     R0, [R0,#8]
     LDR     R0, [R0,#8]
     ADD     R0, R0, #16
-    LDR     R1, =2
+    LDR     R1, =5
     LDR     R0, [R0, R1, LSL #2]        ; arr
     MOV     R0, BP          ; load current base pointer
     LDR     R0, [R0,#8]
     ADD     R0, R0, #16
-    LDR     R1, =3
+    LDR     R1, =6
     LDR     R0, [R0, R1, LSL #2]        ; arr
+    MOV     R0, BP          ; load current base pointer
+    LDR     R0, [R0,#8]
+    ADD     R0, R0, #16
+    LDR     R1, =7
+    LDR     R0, [R0, R1, LSL #2]        ; arr
+    LDR     R0, =1
+    LDR     R5, [R4, R0, LSL #2]        ; c
+    MOV     R0, R5
+    BL      TastierPrintInt
+    MOV     R0, BP          ; load current base pointer
+    LDR     R0, [R0,#8]
+    ADD     R0, R0, #16
+    LDR     R1, =1
+    LDR     R5, [R0, R1, LSL #2]        ; sum
+    MOV     R0, R5
+    BL      TastierPrintInt
     MOVS    R5, #1          ; true
     STR     R5, [BP,#16]    ; t
     LDR     R0, =1
@@ -94,7 +110,7 @@ L2
 ; Procedure SumUp
 SumUp
     LDR     R0, =1          ; current lexic level
-    LDR     R1, =6          ; number of local variables
+    LDR     R1, =7          ; number of local variables
     BL      enter           ; build new stack frame
     B       SumUpBody
 SumUpBody
@@ -132,7 +148,8 @@ L4
     LDR     PC, [TOP]       ; return from SumUp
 ;ADR: 0 | KIND: VAR    | TYPE: INT    | LEVEL: 1 | NAME: j | SetVal: 0
 ;ADR: 1 | KIND: VAR    | TYPE: INT    | LEVEL: 1 | NAME: sum | SetVal: 0
-;ADR: 2 | KIND: ARRAY  | TYPE: INT    | LEVEL: 1 | NAME: arr | SetVal: 0
+;ADR: 2 | KIND: VAR    | TYPE: INT    | LEVEL: 1 | NAME: a | SetVal: 0
+;ADR: 3 | KIND: ARRAY  | TYPE: INT    | LEVEL: 1 | NAME: arr | SetVal: 0
 ;ADR: 0 | KIND: PROC   | TYPE: UNDEF  | LEVEL: 1 | NAME: Subtract | SetVal: 0
 ;ADR: 0 | KIND: PROC   | TYPE: UNDEF  | LEVEL: 1 | NAME: Add | SetVal: 0
 mainline
