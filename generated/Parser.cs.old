@@ -209,11 +209,12 @@ const int // object kinds
 				RHSIndex = Convert.ToInt32(t.val); 
 				Expect(7);
 				obj = tab.Find(name);
+				//type = obj.type;
 				//TODO check type checking
-				if(obj.type != obj.type){
-				 SemErr("Cannot assign type " + obj.type + " to array type " + obj.type);
-				 //return;
-				}
+				// if(type != obj.type){
+				//   SemErr("Cannot assign type " + type + " to array type " + obj.type);
+				//   return;
+				// }
 				
 				if(RHSIndex < 0 || RHSIndex > obj.size){
 				 SemErr(obj.name + ": Index [" + RHSIndex + "] out of bounds[" + obj.size + "]");

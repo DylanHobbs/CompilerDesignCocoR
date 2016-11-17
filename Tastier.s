@@ -156,6 +156,7 @@ stopTest
     B       stopTest
 ;ADR: 0 | KIND: ARRAY  | TYPE: INT    | LEVEL: 1 | NAME: arr | SetVal: 0
 ;ADR: 4 | KIND: VAR    | TYPE: INT    | LEVEL: 1 | NAME: a | SetVal: 0
+;ADR: 5 | KIND: VAR    | TYPE: BOOL   | LEVEL: 1 | NAME: bobo | SetVal: 0
 ;ADR: 0 | KIND: VAR    | TYPE: INT    | LEVEL: 0 | NAME: i | SetVal: 0
 ;ADR: 1 | KIND: CONST  | TYPE: INT    | LEVEL: 0 | NAME: c | SetVal: 0
 ;ADR: 0 | KIND: PROC   | TYPE: UNDEF  | LEVEL: 0 | NAME: SumUp | SetVal: 0
