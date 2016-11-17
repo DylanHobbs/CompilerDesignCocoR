@@ -73,7 +73,48 @@ Primary<out int reg, out int type>
                             type = undef;
                             reg = gen.GetRegister();
                          .)
-  ( Ident<out name>      (.
+  ( Ident<out name> 
+  (  
+    "["                  (. int RHSIndex = 0; .)
+    number             (. RHSIndex = Convert.ToInt32(t.val); .)
+    "]"
+                       (.
+                          obj = tab.Find(name);
+                          //TODO check type checking
+                          if(obj.type != obj.type){
+                            SemErr("Cannot assign type " + obj.type + " to array type " + obj.type);
+                            //return;
+                          }
+
+                          if(RHSIndex < 0 || RHSIndex > obj.size){
+                            SemErr(obj.name + ": Index [" + RHSIndex + "] out of bounds[" + obj.size + "]");
+                            //return;
+                          }
+
+                          //bools
+                          if (obj.type == boolean){
+                            //Global
+                            if (obj.level == 0){ 
+                              gen.StoreGlobal(reg, obj.adr + RHSIndex, name);
+                            }
+                            //Local
+                             else{
+                               gen.StoreLocal(reg, tab.curLevel-obj.level, obj.adr + RHSIndex, name);
+                             } 
+                          } else{
+                           //Global var or const
+                            if(obj.level == 0){
+                              gen.LoadGlobal(reg, obj.adr + RHSIndex, name);
+                            }
+                            //Local
+                            else{
+                              gen.LoadLocal(reg, tab.curLevel-obj.level, obj.adr + RHSIndex, name);
+                            }
+                          }
+                          
+                        .)
+
+   |                     (.
                             obj = tab.Find(name); type = obj.type;
                             if (obj.kind == var || obj.kind == constant) {
                                if (obj.level == 0)
@@ -86,7 +127,7 @@ Primary<out int reg, out int type>
                             }
                             else SemErr("variable expected");
                          .)
-
+  )
   | number               (.
                             type = integer;
                             n = Convert.ToInt32(t.val);
@@ -206,7 +247,7 @@ SimExpr<out int reg, out int type>    (. int typeR, regR; Op op; .)
 
 /*-------------------------------------------------------------------------------------------*/
 
-Stat                     (. int type; string name; Obj obj; int reg=0; int index=0; string RHSArray;.)
+Stat                     (. int type; string name; Obj obj; int reg=0; int index=0;.)
 = Ident<out name>        (. obj = tab.Find(name); .)
 [
   "["
@@ -221,7 +262,7 @@ Stat                     (. int type; string name; Obj obj; int reg=0; int index
 ]
 
 
-  ( ":="                 (.
+  ( ":="                  (.
                             if(obj.kind == constant){
                               if(obj.setVal == 1){
                                 SemErr("Constant '" + obj.name + "' already has a value");
@@ -234,56 +275,13 @@ Stat                     (. int type; string name; Obj obj; int reg=0; int index
                             if (obj.kind == proc)
                                SemErr("cannot assign to procedure");
                          .)
-    (Expr<out reg, out type>   
-                         (.
+    Expr<out reg,
+         out type> ';'   (.
                             if (type == obj.type)
                                if (obj.level == 0)
-                                  gen.StoreGlobal(reg, obj.adr + index, name);
-                               else gen.StoreLocal(reg, tab.curLevel-obj.level, obj.adr + index, name);
+                                  gen.StoreGlobal(reg, obj.adr, name);
+                               else gen.StoreLocal(reg, tab.curLevel-obj.level, obj.adr, name);
                          .)
-//Array on RHS of expr
-| "!" 
-  Ident<out RHSArray>
-  "["                  (. int RHSIndex = 0; .)
-    number             (. RHSIndex = Convert.ToInt32(t.val); .)
-  "]"
-                       (.
-                          Obj aObj = tab.Find(RHSArray);
-                          if(aObj.type != obj.type){
-                            SemErr("Cannot assign type " + obj.type + " to array type " + aObj.type);
-                            //return;
-                          }
-
-                          if(RHSIndex < 0 || RHSIndex > aObj.size){
-                            SemErr(aObj.name + ": Index [" + RHSIndex + "] out of bounds[" + obj.size + "]");
-                            //return;
-                          }
-
-                          //bools
-                          if (obj.type == boolean){
-                            //Global
-                            if (obj.level == 0){ 
-                              gen.StoreGlobal(reg, obj.adr + RHSIndex, name);
-                            }
-                            //Local
-                             else{
-                               gen.StoreLocal(reg, tab.curLevel-obj.level, obj.adr + RHSIndex, name);
-                             } 
-                          } else{
-                           //Global var or const
-                            if(aObj.level == 0){
-                              gen.LoadGlobal(reg, aObj.adr + RHSIndex, RHSArray);
-                            }
-                            //Local
-                            else{
-                              gen.LoadLocal(reg, tab.curLevel-obj.level, aObj.adr + RHSIndex, RHSArray);
-                            }
-                          }
-                          
-                       .)
-   )
-    ";"
-
   | '(' ')' ';'          (.
                             if (obj.kind == proc)
                                gen.Call(name);
@@ -441,26 +439,6 @@ ArrayDecl                (. string name; int type; int kind; int size; Obj obj;.
   ]
   ";"
 .
-
-/*
-Modify to allow declaration and instansiation speratly.
-Add in new mthod to add distance to already existing obj.
-ArrayDecl                (. string name; int type; int kind; int size; Obj obj; int reg;.)
-= "array"                (. kind = array; .)
-  Type<out type>
-  Ident<out name>        (. obj = tab.NewObj(name, array, type); .)
-  "[]"
-  [
-    ":="
-    "["
-    number               (. size = Convert.ToInt32(t.val);
-                            obj = tab.NewObj(name, kind, type, size);
-                         .)
-    "]"
-  ]
-  ";"
-.
-*/
 
 
 END Tastier.

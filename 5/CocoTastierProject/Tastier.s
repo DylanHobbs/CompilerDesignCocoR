@@ -1,44 +1,10 @@
 ; Procedure Subtract
 Subtract
     LDR     R0, =2          ; current lexic level
-    LDR     R1, =1          ; number of local variables
+    LDR     R1, =0          ; number of local variables
     BL      enter           ; build new stack frame
     B       SubtractBody
 SubtractBody
-    LDR     R5, =10
-    MOV     R0, BP          ; load current base pointer
-    LDR     R0, [R0,#8]
-    ADD     R0, R0, #16
-    LDR     R1, =3
-    STR     R5, [R0, R1, LSL #2]        ; arr
-    LDR     R5, =20
-    MOV     R0, BP          ; load current base pointer
-    LDR     R0, [R0,#8]
-    ADD     R0, R0, #16
-    LDR     R1, =4
-    STR     R5, [R0, R1, LSL #2]        ; arr
-    LDR     R5, =30
-    MOV     R0, BP          ; load current base pointer
-    LDR     R0, [R0,#8]
-    ADD     R0, R0, #16
-    LDR     R1, =5
-    STR     R5, [R0, R1, LSL #2]        ; arr
-    MOV     R0, BP          ; load current base pointer
-    LDR     R0, [R0,#8]
-    LDR     R0, [R0,#8]
-    ADD     R0, R0, #16
-    LDR     R1, =5
-    LDR     R0, [R0, R1, LSL #2]        ; arr
-    MOV     R0, BP          ; load current base pointer
-    LDR     R0, [R0,#8]
-    ADD     R0, R0, #16
-    LDR     R1, =6
-    LDR     R0, [R0, R1, LSL #2]        ; arr
-    MOV     R0, BP          ; load current base pointer
-    LDR     R0, [R0,#8]
-    ADD     R0, R0, #16
-    LDR     R1, =7
-    LDR     R0, [R0, R1, LSL #2]        ; arr
     LDR     R0, =1
     LDR     R5, [R4, R0, LSL #2]        ; c
     MOV     R0, R5
@@ -50,8 +16,6 @@ SubtractBody
     LDR     R5, [R0, R1, LSL #2]        ; sum
     MOV     R0, R5
     BL      TastierPrintInt
-    MOVS    R5, #1          ; true
-    STR     R5, [BP,#16]    ; t
     LDR     R0, =1
     LDR     R5, [R4, R0, LSL #2]        ; c
     LDR     R6, =1
@@ -68,7 +32,6 @@ SubtractBody
     MOV     TOP, BP         ; reset top of stack
     LDR     BP, [TOP,#12]   ; and stack base pointers
     LDR     PC, [TOP]       ; return from Subtract
-;ADR: 0 | KIND: CONST  | TYPE: BOOL   | LEVEL: 2 | NAME: t | SetVal: 1
 ; Procedure Add
 Add
     LDR     R0, =2          ; current lexic level
@@ -110,7 +73,7 @@ L2
 ; Procedure SumUp
 SumUp
     LDR     R0, =1          ; current lexic level
-    LDR     R1, =7          ; number of local variables
+    LDR     R1, =3          ; number of local variables
     BL      enter           ; build new stack frame
     B       SumUpBody
 SumUpBody
@@ -149,10 +112,17 @@ L4
 ;ADR: 0 | KIND: VAR    | TYPE: INT    | LEVEL: 1 | NAME: j | SetVal: 0
 ;ADR: 1 | KIND: VAR    | TYPE: INT    | LEVEL: 1 | NAME: sum | SetVal: 0
 ;ADR: 2 | KIND: VAR    | TYPE: INT    | LEVEL: 1 | NAME: a | SetVal: 0
-;ADR: 3 | KIND: ARRAY  | TYPE: INT    | LEVEL: 1 | NAME: arr | SetVal: 0
 ;ADR: 0 | KIND: PROC   | TYPE: UNDEF  | LEVEL: 1 | NAME: Subtract | SetVal: 0
 ;ADR: 0 | KIND: PROC   | TYPE: UNDEF  | LEVEL: 1 | NAME: Add | SetVal: 0
 mainline
+    LDR     R5, =10
+    STR     R5, [BP,#16]    ; arr
+    LDR     R5, =20
+    STR     R5, [BP,#16]    ; arr
+    LDR     R5, [BP,#16]    ; arr
+    ADD     R0, BP, #16
+    LDR     R1, =1
+    LDR     R5, [R0, R1, LSL #2]        ; arr
     ADD     R0, PC, #4      ; string address
     BL      TastierPrintString
     B       L5
@@ -184,7 +154,9 @@ L8
 L7
 stopTest
     B       stopTest
+;ADR: 0 | KIND: ARRAY  | TYPE: INT    | LEVEL: 1 | NAME: arr | SetVal: 0
+;ADR: 4 | KIND: VAR    | TYPE: INT    | LEVEL: 1 | NAME: a | SetVal: 0
 ;ADR: 0 | KIND: VAR    | TYPE: INT    | LEVEL: 0 | NAME: i | SetVal: 0
-;ADR: 1 | KIND: CONST  | TYPE: INT    | LEVEL: 0 | NAME: c | SetVal: 1
+;ADR: 1 | KIND: CONST  | TYPE: INT    | LEVEL: 0 | NAME: c | SetVal: 0
 ;ADR: 0 | KIND: PROC   | TYPE: UNDEF  | LEVEL: 0 | NAME: SumUp | SetVal: 0
 ;ADR: 0 | KIND: PROC   | TYPE: UNDEF  | LEVEL: 0 | NAME: main | SetVal: 0

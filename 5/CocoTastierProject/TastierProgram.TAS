@@ -10,27 +10,13 @@ program Test {
       int j; 
       int sum;
       int a;
-      array int arr[4];
 
       void Subtract() {
-         const bool t;
-         arr[0] := 10;
-         arr[1] := 20;
-         arr[2] := 30;
-         c := !arr[2];
-         sum := !arr[3];
-         a := !arr[4];
-
          write c;
          write sum;
 
-         t := true;
          sum := c + 1;
          i := i - 1;
-
-         //Uncomment following lines to break code. Assigning to contasts twice.
-         //c := 2;
-         //t := false;
       }
       
       void Add() {
@@ -50,6 +36,14 @@ program Test {
    }
 
    void main() {
+   array int arr[4];
+   int a;
+
+   arr[0] := 10;
+   arr[1] := 20;
+   a := arr[0];
+   a := arr[1];
+
       write "Enter value for i (or 0 to stop): ";
       read i;
       while i > 0 {
