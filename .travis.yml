@@ -1,0 +1,5 @@
+language: csharp
+script:    # the following commands are just examples, use whatever your build process requires
+  - cd 5/CocoTastierProject
+  - make build
+  - make compile
