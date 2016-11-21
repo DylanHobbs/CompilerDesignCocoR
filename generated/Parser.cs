@@ -209,7 +209,7 @@ const int // object kinds
 				RHSIndex = Convert.ToInt32(t.val); 
 				Expect(7);
 				obj = tab.Find(name);
-				//type = obj.type;
+				type = obj.type;
 				//TODO check type checking
 				// if(type != obj.type){
 				//   SemErr("Cannot assign type " + type + " to array type " + obj.type);
@@ -453,10 +453,13 @@ const int // object kinds
 				Expr(out reg,
 out type);
 				Expect(27);
-				if (type == obj.type)
+				if (type == obj.type){
 				  if (obj.level == 0)
 				     gen.StoreGlobal(reg, obj.adr, name);
 				  else gen.StoreLocal(reg, tab.curLevel-obj.level, obj.adr, name);
+				} else {
+				 SemErr("Type mismatch");
+				}
 				
 			} else if (la.kind == 10) {
 				Get();

@@ -150,8 +150,8 @@ mainline
     STR     R5, [BP,#16]    ; arr
     LDR     R5, [BP,#16]    ; arr
     ADD     R0, BP, #16
-    LDR     R1, =1
-    LDR     R5, [R0, R1, LSL #2]        ; arr
+    LDR     R1, =4
+    STR     R5, [R0, R1, LSL #2]        ; a
     ADD     R0, PC, #4      ; string address
     BL      TastierPrintString
     B       L5
