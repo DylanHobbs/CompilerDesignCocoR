@@ -248,7 +248,7 @@ SimExpr<out int reg, out int type>    (. int typeR, regR; Op op; .)
 
 /*-------------------------------------------------------------------------------------------*/
 
-Stat                     (. int type; string name; Obj obj; int reg=0; int index=0;.)
+Stat                     (. int type; string name; Obj obj; int reg=0; int index=0; int reg2=0; int type2; int reg3=0; int type3;.)
 = Ident<out name>        (. obj = tab.Find(name); .)
 [
   "["
@@ -276,8 +276,8 @@ Stat                     (. int type; string name; Obj obj; int reg=0; int index
                             if (obj.kind == proc)
                                SemErr("cannot assign to procedure");
                          .)
-    Expr<out reg,
-         out type> ';'    
+  Expr<out reg, out type> 
+   (';'    
                          (.
                             if (type == obj.type){
                                if (obj.level == 0)
@@ -287,6 +287,47 @@ Stat                     (. int type; string name; Obj obj; int reg=0; int index
                               SemErr("Type mismatch");
                             }
                          .)
+    |'?' (. int l1, l2; l1 = 0; .)
+                        (.
+                            if (type == boolean) {
+                               l1 = gen.NewLabel();
+                               gen.BranchFalse(l1);
+                            }
+                            else SemErr("boolean type expected");
+                        .) 
+      Expr<out reg2, out type2>
+                        (.
+                            l2 = gen.NewLabel();
+                            gen.Branch(l2);
+                            gen.Label(l1);
+                        .)
+                        (.
+                            if (type2 == obj.type){
+                               if (obj.level == 0)
+                                  gen.StoreGlobal(reg2, obj.adr, name);
+                               else gen.StoreLocal(reg2, tab.curLevel-obj.level, obj.adr, name);
+                            } else {
+                              SemErr("Type mismatch");
+                            }
+                        .)
+      ":"
+      Expr<out reg3, out type3>
+                        (.
+                            gen.Label(l2);
+                        .) 
+                        (.
+                            if (type3 == obj.type){
+                               if (obj.level == 0)
+                                  gen.StoreGlobal(reg3, obj.adr, name);
+                               else gen.StoreLocal(reg3, tab.curLevel-obj.level, obj.adr, name);
+                            } else {
+                              SemErr("Type mismatch");
+                            }
+                        .) 
+
+      ";"               
+                 
+  )
 
   | '(' ')' ';'          (.
                             if (obj.kind == proc)
