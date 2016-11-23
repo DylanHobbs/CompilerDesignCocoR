@@ -107,11 +107,13 @@ L5
     BL      TastierPrintInt
     LDR     R5, =0
     STR     R5, [BP,#16]    ; a
+    B       L7
 L6
     LDR     R5, [BP,#16]    ; a
     LDR     R6, =1
     ADD     R5, R5, R6
     STR     R5, [BP,#16]    ; a
+L7
     LDR     R5, [BP,#16]    ; a
     LDR     R6, =5
     CMP     R5, R6

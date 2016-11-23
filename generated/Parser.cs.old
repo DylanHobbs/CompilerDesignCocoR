@@ -510,14 +510,17 @@ const int // object kinds
 		case 30: {
 			Get();
 			int l1, l2, l3;
-			l2=0;          
+			l2=0;
+			l3=0;          
 			
 			Stat();
 			l1 = gen.NewLabel();
-			gen.Label(l1); //Used to avoid assignment on each loop. Used to branch to start of next stat
+			l3 = gen.NewLabel();
+			gen.Branch(l3);
+			gen.Label(l1);  //Used to avoid assignment on each loop. Used to branch to start of next stat
 			
 			Stat();
-			l3 = gen.NewLabel();
+			gen.Label(l3);
 			
 			Expr(out reg, out type);
 			if (type == boolean) {
