@@ -455,7 +455,7 @@ const int // object kinds
 					if (type == obj.type){
 					  if (obj.level == 0)
 					     gen.StoreGlobal(reg, obj.adr, name);
-					  else gen.StoreLocal(reg, tab.curLevel-obj.level, obj.adr, name);
+					  else gen.StoreLocal(reg, tab.curLevel-obj.level, obj.adr+index, name);
 					} else {
 					 SemErr("Type mismatch");
 					}

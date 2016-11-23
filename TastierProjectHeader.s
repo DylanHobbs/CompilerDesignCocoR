@@ -26,4 +26,4 @@ main
 	LDR		R4, =globals
 	LDR 	BP, =stack		; address of stack base
 	LDR 	TOP, =stack+16	; address of top of stack frame
-	B		Main
+	B		mainline
