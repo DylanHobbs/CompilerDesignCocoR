@@ -249,115 +249,14 @@ SimExpr<out int reg, out int type>    (. int typeR, regR; Op op; .)
 /*-------------------------------------------------------------------------------------------*/
 
 Stat                     (. int type; string name; Obj obj; int reg=0; int index=0; int reg2=0; int type2; int reg3=0; int type3;.)
-= Ident<out name>        (. obj = tab.Find(name); .)
-[
-  "["
-     number             (. 
-                          index = Convert.ToInt32(t.val);
-                          if(index >= obj.size){
-                            SemErr(obj.name + ": Index [" + index + "] out of bounds[" + obj.size + "]");
-                            return;
-                          }
-                        .)
-  "]"
-]
+= 
+  [
+    Assign               (. return;.)
+  ]
+  
 
 
-  ( ":="                  (.
-                            if(obj.kind == constant){
-                              if(obj.setVal == 1){
-                                SemErr("Constant '" + obj.name + "' already has a value");
-                                return;
-                              }
-                              obj.setVal = 1;
-                            }
-                            if (obj.kind == proc)
-                               SemErr("cannot assign to procedure");
-                         .)
-  Expr<out reg, out type> 
-   (';'    
-                         (.
-                            if (type == obj.type){
-                               if (obj.level == 0)
-                                  gen.StoreGlobal(reg, obj.adr, name);
-                               else gen.StoreLocal(reg, tab.curLevel-obj.level, obj.adr, name);
-                            } else {
-                              SemErr("Type mismatch");
-                            }
-                         .)
-    |'?' (. int l1, l2; l1 = 0; .)
-                        (.
-                            if (type == boolean) {
-                               l1 = gen.NewLabel();
-                               gen.BranchFalse(l1);
-                            }
-                            else SemErr("boolean type expected");
-                        .) 
-      Expr<out reg2, out type2>
-                        (.
-                            l2 = gen.NewLabel();
-                            gen.Branch(l2);
-                            gen.Label(l1);
-                        .)
-                        (.
-                            if (type2 == obj.type){
-                               if (obj.level == 0)
-                                  gen.StoreGlobal(reg2, obj.adr, name);
-                               else gen.StoreLocal(reg2, tab.curLevel-obj.level, obj.adr, name);
-                            } else {
-                              SemErr("Type mismatch");
-                            }
-                        .)
-      ":"
-      Expr<out reg3, out type3>
-                        (.
-                            gen.Label(l2);
-                        .) 
-                        (.
-                            if (type3 == obj.type){
-                               if (obj.level == 0)
-                                  gen.StoreGlobal(reg3, obj.adr, name);
-                               else gen.StoreLocal(reg3, tab.curLevel-obj.level, obj.adr, name);
-                            } else {
-                              SemErr("Type mismatch");
-                            }
-                        .) 
-
-      ";"               
-                 
-  )
-
-  | '(' ')' ';'          (.
-                            if (obj.kind == proc)
-                               gen.Call(name);
-                            else SemErr("object is not a procedure");
-                         .)
-  )
-
-| "for"                 (.
-                            int l1, l2;
-                            l1 = gen.NewLabel();
-                            gen.Label(l1); l2=0;          
-                        .)
-
-Stat                    (.
-
-                        .)
-
-Stat                    (.
-                            
-                        .)
-
-Expr<out reg, out type>  (.
-                            
-                         .)
-
-"do" 
-Stat                     (.
-                            
-                         .)
-
-| "if"                   (. int l1, l2; l1 = 0; .)
+( "if"                   (. int l1, l2; l1 = 0; .)
   Expr<out reg, out type>         
                          (.
                             if (type == boolean) {
@@ -436,10 +335,99 @@ Stat                     (.
 | '{'
   { Stat | VarDecl | ConstDecl | ArrayDecl} //Bug aran
   '}'
+  )
 .
 
 /*-------------------------------------------------------------------------------------------*/
+Assign                   (. int type; string name; Obj obj; int reg=0; int index=0; int reg2=0; int type2; int reg3=0; int type3;.)
+= Ident<out name>        (. obj = tab.Find(name); .)
+[
+  "["
+     number             (. 
+                          index = Convert.ToInt32(t.val);
+                          if(index >= obj.size){
+                            SemErr(obj.name + ": Index [" + index + "] out of bounds[" + obj.size + "]");
+                            return;
+                          }
+                        .)
+  "]"
+]
 
+
+  ( ":="                  (.
+                            if(obj.kind == constant){
+                              if(obj.setVal == 1){
+                                SemErr("Constant '" + obj.name + "' already has a value");
+                                return;
+                              }
+                              obj.setVal = 1;
+                            }
+                         .)
+                         (.
+                            if (obj.kind == proc)
+                               SemErr("cannot assign to procedure");
+                         .)
+  Expr<out reg, out type> 
+   (';'    
+                         (.
+                            if (type == obj.type){
+                               if (obj.level == 0)
+                                  gen.StoreGlobal(reg, obj.adr, name);
+                               else gen.StoreLocal(reg, tab.curLevel-obj.level, obj.adr, name);
+                            } else {
+                              SemErr("Type mismatch");
+                            }
+                         .)
+    |'?' (. int l1, l2; l1 = 0; .)
+                        (.
+                            if (type == boolean) {
+                               l1 = gen.NewLabel();
+                               gen.BranchFalse(l1);
+                            }
+                            else SemErr("boolean type expected");
+                        .) 
+      Expr<out reg2, out type2>
+                        (.
+                            l2 = gen.NewLabel();
+                            gen.Branch(l2);
+                            gen.Label(l1);
+                        .)
+                        (.
+                            if (type2 == obj.type){
+                               if (obj.level == 0)
+                                  gen.StoreGlobal(reg2, obj.adr, name);
+                               else gen.StoreLocal(reg2, tab.curLevel-obj.level, obj.adr, name);
+                            } else {
+                              SemErr("Type mismatch");
+                            }
+                        .)
+      ":"
+      Expr<out reg3, out type3>
+                        (.
+                            gen.Label(l2);
+                        .) 
+                        (.
+                            if (type3 == obj.type){
+                               if (obj.level == 0)
+                                  gen.StoreGlobal(reg3, obj.adr, name);
+                               else gen.StoreLocal(reg3, tab.curLevel-obj.level, obj.adr, name);
+                            } else {
+                              SemErr("Type mismatch");
+                            }
+                        .) 
+
+      ";"               
+                 
+  )
+
+  | '(' ')' ';'          (.
+                            if (obj.kind == proc)
+                               gen.Call(name);
+                            else SemErr("object is not a procedure");
+                         .)
+  )
+.
+/*-------------------------------------------------------------------------------------------*/
 Tastier                  (. string pName; .)
   = "program"
   Ident<out pName>       (. tab.OpenScope(); .)

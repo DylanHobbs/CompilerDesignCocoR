@@ -4,18 +4,11 @@
 program Test {
 
    int i;
-   const int c;
 
    void SumUp() {
-      int j; 
-      int sum;
-      int a;
-
+      int j, sum;
+      
       void Subtract() {
-         write c;
-         write sum;
-
-         sum := c + 1;
          i := i - 1;
       }
       
@@ -35,24 +28,16 @@ program Test {
       writeln sum;
    }
 
-   void Test(){
-      int a;
-      a := 10;
-      a := 1>2 ? a+10 : a-10;
-      write "a is:";
-      write a;
-   }
-
    void main() {
-   array int arr[4];
-   int a;
-   bool bobo;
+      int a;
+      a := 0;
+      write "a := ";
+      write a;
 
-   arr[0] := 10;
-   arr[1] := 20;
-   a := arr[0];
-   //bobo := arr[1];
-   Test();
+      a := 1>2 ? a+1 : a+10;
+
+      write "a := ";
+      write a;
 
       write "Enter value for i (or 0 to stop): ";
       read i;

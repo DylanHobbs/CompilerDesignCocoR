@@ -36,7 +36,7 @@ public class Parser {
 	public const int _number = 1;
 	public const int _ident = 2;
 	public const int _string = 3;
-	public const int maxT = 42;
+	public const int maxT = 44;
 
 	const bool T = true;
 	const bool x = false;
@@ -126,7 +126,7 @@ const int // object kinds
 		} else if (la.kind == 5) {
 			Get();
 			op = Op.SUB; 
-		} else SynErr(43);
+		} else SynErr(45);
 	}
 
 	void Expr(out int reg, out int type) {
@@ -190,7 +190,7 @@ const int // object kinds
 			op = Op.GEQ; 
 			break;
 		}
-		default: SynErr(44); break;
+		default: SynErr(46); break;
 		}
 	}
 
@@ -256,7 +256,7 @@ const int // object kinds
 				}
 				else SemErr("variable expected");
 				
-			} else SynErr(45);
+			} else SynErr(47);
 			break;
 		}
 		case 1: {
@@ -296,7 +296,7 @@ const int // object kinds
 			Expect(11);
 			break;
 		}
-		default: SynErr(46); break;
+		default: SynErr(48); break;
 		}
 	}
 
@@ -328,7 +328,7 @@ const int // object kinds
 				Get();
 			}
 			op = Op.MOD; 
-		} else SynErr(47);
+		} else SynErr(49);
 	}
 
 	void ProcDecl(string pName) {
@@ -346,9 +346,9 @@ const int // object kinds
 		Expect(11);
 		Expect(18);
 		while (StartOf(3)) {
-			if (la.kind == 37 || la.kind == 38) {
+			if (la.kind == 39 || la.kind == 40) {
 				VarDecl();
-			} else if (la.kind == 40) {
+			} else if (la.kind == 42) {
 				ConstDecl();
 			} else {
 				ArrayDecl();
@@ -381,7 +381,7 @@ const int // object kinds
 		Type(out type);
 		Ident(out name);
 		tab.NewObj(name, var, type); 
-		while (la.kind == 39) {
+		while (la.kind == 41) {
 			Get();
 			Ident(out name);
 			tab.NewObj(name, var, type); 
@@ -391,11 +391,11 @@ const int // object kinds
 
 	void ConstDecl() {
 		string name; int type; 
-		Expect(40);
+		Expect(42);
 		Type(out type);
 		Ident(out name);
 		tab.NewObj(name, constant, type); 
-		while (la.kind == 39) {
+		while (la.kind == 41) {
 			Get();
 			Ident(out name);
 			tab.NewObj(name, constant, type); 
@@ -405,7 +405,7 @@ const int // object kinds
 
 	void ArrayDecl() {
 		string name; int type; int kind; int size; Obj obj;
-		Expect(41);
+		Expect(43);
 		kind = array; 
 		Type(out type);
 		Ident(out name);
@@ -446,7 +446,6 @@ const int // object kinds
 				 }
 				 obj.setVal = 1;
 				}
-				
 				if (obj.kind == proc)
 				  SemErr("cannot assign to procedure");
 				
@@ -496,7 +495,7 @@ const int // object kinds
 					}
 					
 					Expect(27);
-				} else SynErr(48);
+				} else SynErr(50);
 			} else if (la.kind == 10) {
 				Get();
 				Expect(11);
@@ -505,10 +504,27 @@ const int // object kinds
 				  gen.Call(name);
 				else SemErr("object is not a procedure");
 				
-			} else SynErr(49);
+			} else SynErr(51);
 			break;
 		}
 		case 30: {
+			Get();
+			int l1, l2;
+			l1 = gen.NewLabel();
+			gen.Label(l1); l2=0;          
+			
+			Stat();
+			
+			Stat();
+			
+			Expr(out reg, out type);
+			
+			Expect(31);
+			Stat();
+			
+			break;
+		}
+		case 32: {
 			Get();
 			int l1, l2; l1 = 0; 
 			Expr(out reg, out type);
@@ -523,14 +539,14 @@ const int // object kinds
 			gen.Branch(l2);
 			gen.Label(l1);
 			
-			if (la.kind == 31) {
+			if (la.kind == 33) {
 				Get();
 				Stat();
 			}
 			gen.Label(l2); 
 			break;
 		}
-		case 32: {
+		case 34: {
 			Get();
 			int l1, l2;
 			l1 = gen.NewLabel();
@@ -549,7 +565,7 @@ const int // object kinds
 			
 			break;
 		}
-		case 33: {
+		case 35: {
 			Get();
 			Ident(out name);
 			Expect(27);
@@ -564,7 +580,7 @@ const int // object kinds
 			
 			break;
 		}
-		case 34: {
+		case 36: {
 			Get();
 			string text; 
 			if (StartOf(5)) {
@@ -579,11 +595,11 @@ const int // object kinds
 			} else if (la.kind == 3) {
 				String(out text);
 				gen.WriteString(text); 
-			} else SynErr(50);
+			} else SynErr(52);
 			Expect(27);
 			break;
 		}
-		case 35: {
+		case 37: {
 			Get();
 			Expr(out reg, out type);
 			switch (type) {
@@ -601,9 +617,9 @@ const int // object kinds
 			while (StartOf(6)) {
 				if (StartOf(4)) {
 					Stat();
-				} else if (la.kind == 37 || la.kind == 38) {
+				} else if (la.kind == 39 || la.kind == 40) {
 					VarDecl();
-				} else if (la.kind == 40) {
+				} else if (la.kind == 42) {
 					ConstDecl();
 				} else {
 					ArrayDecl();
@@ -612,7 +628,7 @@ const int // object kinds
 			Expect(19);
 			break;
 		}
-		default: SynErr(51); break;
+		default: SynErr(53); break;
 		}
 	}
 
@@ -631,14 +647,14 @@ const int // object kinds
 
 	void Tastier() {
 		string pName; 
-		Expect(36);
+		Expect(38);
 		Ident(out pName);
 		tab.OpenScope(); 
 		Expect(18);
 		while (StartOf(3)) {
-			if (la.kind == 37 || la.kind == 38) {
+			if (la.kind == 39 || la.kind == 40) {
 				VarDecl();
-			} else if (la.kind == 40) {
+			} else if (la.kind == 42) {
 				ConstDecl();
 			} else {
 				ArrayDecl();
@@ -653,13 +669,13 @@ const int // object kinds
 
 	void Type(out int type) {
 		type = undef; 
-		if (la.kind == 37) {
+		if (la.kind == 39) {
 			Get();
 			type = integer; 
-		} else if (la.kind == 38) {
+		} else if (la.kind == 40) {
 			Get();
 			type = boolean; 
-		} else SynErr(52);
+		} else SynErr(54);
 	}
 
 
@@ -674,14 +690,14 @@ const int // object kinds
 	}
 	
 	static readonly bool[,] set = {
-		{T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x},
-		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,T,T,T, T,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x},
-		{x,x,T,x, T,T,x,x, x,x,x,T, T,T,T,T, T,x,T,x, T,T,T,T, T,T,x,T, T,T,T,x, T,T,T,T, x,x,x,x, x,x,x,x},
-		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,T,x, T,T,x,x},
-		{x,x,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,x, x,x,x,x, x,x,x,x, x,x,T,x, T,T,T,T, x,x,x,x, x,x,x,x},
-		{x,T,T,x, x,T,x,x, T,T,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x},
-		{x,x,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,x, x,x,x,x, x,x,x,x, x,x,T,x, T,T,T,T, x,T,T,x, T,T,x,x},
-		{x,x,x,x, x,x,x,x, x,x,x,x, T,T,T,T, T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x}
+		{T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x},
+		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,T,T,T, T,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x},
+		{x,x,T,x, T,T,x,x, x,x,x,T, T,T,T,T, T,x,T,x, T,T,T,T, T,T,x,T, T,T,T,T, T,x,T,T, T,T,x,x, x,x,x,x, x,x},
+		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,T, T,x,T,T, x,x},
+		{x,x,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,x, x,x,x,x, x,x,x,x, x,x,T,x, T,x,T,T, T,T,x,x, x,x,x,x, x,x},
+		{x,T,T,x, x,T,x,x, T,T,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x},
+		{x,x,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,x, x,x,x,x, x,x,x,x, x,x,T,x, T,x,T,T, T,T,x,T, T,x,T,T, x,x},
+		{x,x,x,x, x,x,x,x, x,x,x,x, T,T,T,T, T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x}
 
 	};
 } // end Parser
@@ -725,29 +741,31 @@ public class Errors {
 			case 27: s = "\";\" expected"; break;
 			case 28: s = "\"?\" expected"; break;
 			case 29: s = "\":\" expected"; break;
-			case 30: s = "\"if\" expected"; break;
-			case 31: s = "\"else\" expected"; break;
-			case 32: s = "\"while\" expected"; break;
-			case 33: s = "\"read\" expected"; break;
-			case 34: s = "\"write\" expected"; break;
-			case 35: s = "\"writeln\" expected"; break;
-			case 36: s = "\"program\" expected"; break;
-			case 37: s = "\"int\" expected"; break;
-			case 38: s = "\"bool\" expected"; break;
-			case 39: s = "\",\" expected"; break;
-			case 40: s = "\"const\" expected"; break;
-			case 41: s = "\"array\" expected"; break;
-			case 42: s = "??? expected"; break;
-			case 43: s = "invalid AddOp"; break;
-			case 44: s = "invalid RelOp"; break;
-			case 45: s = "invalid Primary"; break;
-			case 46: s = "invalid Primary"; break;
-			case 47: s = "invalid MulOp"; break;
-			case 48: s = "invalid Stat"; break;
-			case 49: s = "invalid Stat"; break;
+			case 30: s = "\"for\" expected"; break;
+			case 31: s = "\"do\" expected"; break;
+			case 32: s = "\"if\" expected"; break;
+			case 33: s = "\"else\" expected"; break;
+			case 34: s = "\"while\" expected"; break;
+			case 35: s = "\"read\" expected"; break;
+			case 36: s = "\"write\" expected"; break;
+			case 37: s = "\"writeln\" expected"; break;
+			case 38: s = "\"program\" expected"; break;
+			case 39: s = "\"int\" expected"; break;
+			case 40: s = "\"bool\" expected"; break;
+			case 41: s = "\",\" expected"; break;
+			case 42: s = "\"const\" expected"; break;
+			case 43: s = "\"array\" expected"; break;
+			case 44: s = "??? expected"; break;
+			case 45: s = "invalid AddOp"; break;
+			case 46: s = "invalid RelOp"; break;
+			case 47: s = "invalid Primary"; break;
+			case 48: s = "invalid Primary"; break;
+			case 49: s = "invalid MulOp"; break;
 			case 50: s = "invalid Stat"; break;
 			case 51: s = "invalid Stat"; break;
-			case 52: s = "invalid Type"; break;
+			case 52: s = "invalid Stat"; break;
+			case 53: s = "invalid Stat"; break;
+			case 54: s = "invalid Type"; break;
 
 			default: s = "error " + n; break;
 		}
