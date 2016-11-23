@@ -134,52 +134,46 @@ L5
     LDR     R5, [BP,#16]    ; a
     MOV     R0, R5
     BL      TastierPrintInt
-    LDR     R5, =1
-    LDR     R6, =2
-    CMP     R5, R6
-    MOVGT   R5, #1
-    MOVLE   R5, #0
-    MOVS    R5, R5          ; reset Z flag in CPSR
-    BEQ     L6              ; jump on condition false
+    LDR     R5, =0
+    STR     R5, [BP,#16]    ; a
+L6
     LDR     R5, [BP,#16]    ; a
     LDR     R6, =1
     ADD     R5, R5, R6
-    B       L7
-L6
     STR     R5, [BP,#16]    ; a
     LDR     R5, [BP,#16]    ; a
-    LDR     R6, =10
-    ADD     R5, R5, R6
-L7
-    STR     R5, [BP,#16]    ; a
+    LDR     R6, =5
+    CMP     R5, R6
+    MOVLT   R5, #1
+    MOVGE   R5, #0
+    MOVS    R5, R5          ; reset Z flag in CPSR
+    BEQ     L8              ; jump on condition false
     ADD     R0, PC, #4      ; string address
     BL      TastierPrintString
-    B       L8
-    DCB     "a := ", 0
+    B       L9
+    DCB     "a is ", 0
     ALIGN
-L8
+L9
     LDR     R5, [BP,#16]    ; a
     MOV     R0, R5
     BL      TastierPrintInt
     ADD     R0, PC, #4      ; string address
     BL      TastierPrintString
-    B       L9
-    DCB     "Enter value for i (or 0 to stop): ", 0
+    B       L10
+    DCB     " ", 0
     ALIGN
-L9
-    BL      TastierReadInt
-    STR     R0, [R4]        ; i
 L10
-    LDR     R5, [R4]        ; i
-    LDR     R6, =0
-    CMP     R5, R6
-    MOVGT   R5, #1
-    MOVLE   R5, #0
-    MOVS    R5, R5          ; reset Z flag in CPSR
-    BEQ     L11              ; jump on condition false
-    ADD     R0, PC, #4      ; store return address
-    STR     R0, [TOP]       ; in new stack frame
-    B       SumUp
+    B       L6
+L8
+    ADD     R0, PC, #4      ; string address
+    BL      TastierPrintString
+    B       L11
+    DCB     "a := ", 0
+    ALIGN
+L11
+    LDR     R5, [BP,#16]    ; a
+    MOV     R0, R5
+    BL      TastierPrintInt
     ADD     R0, PC, #4      ; string address
     BL      TastierPrintString
     B       L12
@@ -188,8 +182,27 @@ L10
 L12
     BL      TastierReadInt
     STR     R0, [R4]        ; i
-    B       L10
-L11
+L13
+    LDR     R5, [R4]        ; i
+    LDR     R6, =0
+    CMP     R5, R6
+    MOVGT   R5, #1
+    MOVLE   R5, #0
+    MOVS    R5, R5          ; reset Z flag in CPSR
+    BEQ     L14              ; jump on condition false
+    ADD     R0, PC, #4      ; store return address
+    STR     R0, [TOP]       ; in new stack frame
+    B       SumUp
+    ADD     R0, PC, #4      ; string address
+    BL      TastierPrintString
+    B       L15
+    DCB     "Enter value for i (or 0 to stop): ", 0
+    ALIGN
+L15
+    BL      TastierReadInt
+    STR     R0, [R4]        ; i
+    B       L13
+L14
 stopTest
     B       stopTest
 ;ADR: 0 | KIND: VAR    | TYPE: INT    | LEVEL: 1 | NAME: a | SetVal: 0

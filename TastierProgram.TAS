@@ -34,7 +34,13 @@ program Test {
       write "a := ";
       write a;
 
-      a := 1>2 ? a+1 : a+10;
+      //a := 1>2 ? a+1 : a+10;
+      for a := 0; a := a + 1; a < 5
+      do {
+         write "a is ";
+         write a; 
+         write " ";
+      }
 
       write "a := ";
       write a;

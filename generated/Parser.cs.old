@@ -509,18 +509,27 @@ const int // object kinds
 		}
 		case 30: {
 			Get();
-			int l1, l2;
+			int l1, l2, l3;
+			l2=0;          
+			
+			Stat();
 			l1 = gen.NewLabel();
-			gen.Label(l1); l2=0;          
+			gen.Label(l1); //Used to avoid assignment on each loop. Used to branch to start of next stat
 			
 			Stat();
-			
-			Stat();
+			l3 = gen.NewLabel();
 			
 			Expr(out reg, out type);
+			if (type == boolean) {
+			  l2 = gen.NewLabel();
+			  gen.BranchFalse(l2);
+			}
+			else SemErr("boolean type expected");
 			
 			Expect(31);
 			Stat();
+			gen.Branch(l1);
+			gen.Label(l2);
 			
 			break;
 		}
