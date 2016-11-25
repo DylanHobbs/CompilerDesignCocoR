@@ -58,7 +58,6 @@ program Test {
       for a:=0; a := a + 1; a < 5
          do {
             write a; write " ";
-            a := a + 1;
          }
       write "\n";
 

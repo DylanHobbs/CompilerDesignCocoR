@@ -228,10 +228,6 @@ L18
     DCB     " ", 0
     ALIGN
 L20
-    LDR     R5, [BP,#16]    ; a
-    LDR     R6, =1
-    ADD     R5, R5, R6
-    STR     R5, [BP,#16]    ; a
     B       L17
 L19
     ADD     R0, PC, #4      ; string address
