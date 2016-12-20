@@ -190,7 +190,7 @@ ProcDecl<string pName>   (. Obj obj; string procName; .)
                             obj = tab.NewObj(procName, proc, undef);
                             if (procName == "main")
                                if (tab.curLevel == 0)
-                                  gen.mainPresent = true;
+                                  tab.mainPresent = true;
                                else SemErr("main not at lexic level 0");
                             tab.OpenScope();
                          .)

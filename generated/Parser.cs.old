@@ -338,7 +338,7 @@ const int // object kinds
 		obj = tab.NewObj(procName, proc, undef);
 		if (procName == "main")
 		  if (tab.curLevel == 0)
-		     gen.mainPresent = true;
+		     tab.mainPresent = true;
 		  else SemErr("main not at lexic level 0");
 		tab.OpenScope();
 		
