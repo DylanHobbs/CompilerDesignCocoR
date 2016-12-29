@@ -68,7 +68,7 @@ Expr<out int reg, out int type>
 /*-------------------------------------------------------------------------------------------*/
  // load Primary into register
 Primary<out int reg, out int type> 
-                         (. int n; Obj obj; string name; .)
+                         (. int n; Obj obj; string name; int size2d=0; .)
 =                        (.
                             type = undef;
                             reg = gen.GetRegister();
@@ -80,14 +80,19 @@ Primary<out int reg, out int type>
     "]"
     [
       "["
-       number           (. int side2d = Convert.ToInt32(t.val); 
-                           
-                        .)
+       number           (. size2d = Convert.ToInt32(t.val); .)
       "]"
     ]
                         (.
                           obj = tab.Find(name);
                           type = obj.type;
+
+                          //Compute 2D index if needed
+                          if(size2d > 0){
+                            //Row major order
+                            int width = obj.size1d;
+                            RHSIndex = (width * RHSIndex) + size2d;
+                          }
 
                           if(RHSIndex < 0 || RHSIndex > obj.size){
                             SemErr(obj.name + ": Index [" + RHSIndex + "] out of bounds[" + obj.size + "]");
@@ -265,6 +270,14 @@ Stat                     (. int type; string name; Obj obj; int reg=0; int index
                           }
                         .)
   "]"
+
+  [
+    "["
+      number            (. int index2d = Convert.ToInt32(t.val); 
+                           index = (obj.size1d * index) + index2d;
+                        .)
+    "]"
+  ]
 ]
 
 

@@ -32,17 +32,23 @@ program Test {
    void test(){
       int a;
       int b;
-      array int lol[10][10];
+      array int lol[3][3];
       int c;
 
       a := 1;
       b := 1;
       
+      lol[0][0] := 0;
+      lol[2][2] := 9;
+
+      write "Should be 9";
+      writeln lol[2][2];
    }
 
    void main() {
       int a;
       array int arr[3];
+      test();
 
       //Array Access
       //arr[0] := 0;

@@ -195,7 +195,7 @@ const int // object kinds
 	}
 
 	void Primary(out int reg, out int type) {
-		int n; Obj obj; string name; 
+		int n; Obj obj; string name; int size2d=0; 
 		type = undef;
 		reg = gen.GetRegister();
 		
@@ -211,13 +211,18 @@ const int // object kinds
 				if (la.kind == 6) {
 					Get();
 					Expect(1);
-					int side2d = Convert.ToInt32(t.val); 
-					
-					
+					size2d = Convert.ToInt32(t.val); 
 					Expect(7);
 				}
 				obj = tab.Find(name);
 				type = obj.type;
+				
+				//Compute 2D index if needed
+				if(size2d > 0){
+				 //Row major order
+				 int width = obj.size1d;
+				 RHSIndex = (width * RHSIndex) + size2d;
+				}
 				
 				if(RHSIndex < 0 || RHSIndex > obj.size){
 				 SemErr(obj.name + ": Index [" + RHSIndex + "] out of bounds[" + obj.size + "]");
@@ -465,6 +470,14 @@ const int // object kinds
 				}
 				
 				Expect(7);
+				if (la.kind == 6) {
+					Get();
+					Expect(1);
+					int index2d = Convert.ToInt32(t.val); 
+					index = (obj.size1d * index) + index2d;
+					
+					Expect(7);
+				}
 			}
 			if (la.kind == 26) {
 				Get();
