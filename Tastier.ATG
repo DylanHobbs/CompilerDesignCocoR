@@ -75,17 +75,19 @@ Primary<out int reg, out int type>
                          .)
   ( Ident<out name> 
   (  
-    "["                  (. int RHSIndex = 0; .)
-    number             (. RHSIndex = Convert.ToInt32(t.val); .)
+    "["                 (. int RHSIndex = 0; .)
+    number              (. RHSIndex = Convert.ToInt32(t.val); .)
     "]"
-                       (.
+    [
+      "["
+       number           (. int side2d = Convert.ToInt32(t.val); 
+                           
+                        .)
+      "]"
+    ]
+                        (.
                           obj = tab.Find(name);
                           type = obj.type;
-                          //TODO check type checking
-                          // if(type != obj.type){
-                          //   SemErr("Cannot assign type " + type + " to array type " + obj.type);
-                          //   return;
-                          // }
 
                           if(RHSIndex < 0 || RHSIndex > obj.size){
                             SemErr(obj.name + ": Index [" + RHSIndex + "] out of bounds[" + obj.size + "]");
@@ -184,7 +186,7 @@ MulOp<out Op op>
 
 /*-------------------------------------------------------------------------------------------*/
 
-ProcDecl<string pName>   (. Obj obj; string procName; .)
+ProcDecl<string pName>   (. Obj obj; string procName; string name; .)
 = "void"
   Ident<out procName>    (.
                             obj = tab.NewObj(procName, proc, undef);
@@ -194,7 +196,10 @@ ProcDecl<string pName>   (. Obj obj; string procName; .)
                                else SemErr("main not at lexic level 0");
                             tab.OpenScope();
                          .)
-  '(' ')'
+   
+   ParamsDecl
+
+
   '{'
      {
      VarDecl | ConstDecl | ArrayDecl
@@ -502,19 +507,66 @@ ConstDecl                (. string name; int type; .)
 .
 
 /*-------------------------------------------------------------------------------------------*/
-ArrayDecl                (. string name; int type; int kind; int size; Obj obj;.)
+ArrayDecl                (. string name; int type; int kind; int size; int size1d; int size2d=1; Obj obj;.)
 = "array"                (. kind = array; .)
   Type<out type>
   Ident<out name>     
-  [
     "["
     number               (. size = Convert.ToInt32(t.val);
-                            obj = tab.NewObj(name, kind, type, size);
+                            size1d = size;
                          .)
     "]"
-  ]
+
+      
+        ["["
+        number               (. size2d = Convert.ToInt32(t.val);
+                                size = size * size2d;
+                             .)
+        "]"
+        ]
+      
+
+                          (. 
+                            obj = tab.NewObj(name, kind, type, size, size1d, size2d);
+                          .)
+
   ";"
 .
+/*-------------------------------------------------------------------------------------------*/
+ParamsDecl                 (. string name; int type;.)
+= '('
+  (
+    Type<out type>
+    Ident<out name>        (. tab.NewObj(name, var, type); .)
+      {
+        ','
+        Type<out type>
+        Ident<out name>    (. tab.NewObj(name, var, type); .)
+      } 
+    ')'
 
+    | ')' 
+  )   
 
+.
 END Tastier.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

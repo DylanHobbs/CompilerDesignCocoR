@@ -29,17 +29,28 @@ program Test {
       writeln sum;
    }
 
+   void test(){
+      int a;
+      int b;
+      array int lol[10][10];
+      int c;
+
+      a := 1;
+      b := 1;
+      
+   }
+
    void main() {
       int a;
       array int arr[3];
 
       //Array Access
-      arr[0] := 0;
-      arr[1] := 10;
-      a := arr[1];
-      write "a should be 10 \n";
-      write "a is ";
-      write a; write "\n";
+      //arr[0] := 0;
+      //arr[1] := 10;
+      //a := arr[1];
+      //write "a should be 10 \n";
+      //write "a is ";
+      //write a; write "\n";
 
       a := 0;
       //Conditional true

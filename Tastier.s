@@ -101,53 +101,34 @@ L4
     MOV     TOP, BP         ; reset top of stack
     LDR     BP, [TOP,#12]   ; and stack base pointers
     LDR     PC, [TOP]       ; return from SumUp
-;ADR: 0 | KIND: VAR    | TYPE: INT    | LEVEL: 1 | NAME: j | SetVal: 0
-;ADR: 1 | KIND: VAR    | TYPE: INT    | LEVEL: 1 | NAME: sum | SetVal: 0
-;ADR: 0 | KIND: PROC   | TYPE: UNDEF  | LEVEL: 1 | NAME: Subtract | SetVal: 0
-;ADR: 0 | KIND: PROC   | TYPE: UNDEF  | LEVEL: 1 | NAME: Add | SetVal: 0
-mainline
-    LDR     R5, =0
-    ADD     R2, BP, #16
-    LDR     R1, =1
-    ADD     R2, R2, R1, LSL #2
-    STR     R5, [R2]        ; arr
-    LDR     R5, =10
-    ADD     R2, BP, #16
-    LDR     R1, =2
-    ADD     R2, R2, R1, LSL #2
-    STR     R5, [R2]        ; arr
-    ADD     R2, BP, #16
-    LDR     R1, =2
-    ADD     R2, R2, R1, LSL #2
-    LDR     R5, [R2]        ; arr
+;ADR: 0 | KIND: VAR    | TYPE: INT    | LEVEL: 1 | NAME: j | SetVal: 0 | size2d: 1 | size1d: 1
+;ADR: 1 | KIND: VAR    | TYPE: INT    | LEVEL: 1 | NAME: sum | SetVal: 0 | size2d: 1 | size1d: 1
+;ADR: 0 | KIND: PROC   | TYPE: UNDEF  | LEVEL: 1 | NAME: Subtract | SetVal: 0 | size2d: 1 | size1d: 1
+;ADR: 0 | KIND: PROC   | TYPE: UNDEF  | LEVEL: 1 | NAME: Add | SetVal: 0 | size2d: 1 | size1d: 1
+test
+    LDR     R0, =1          ; current lexic level
+    LDR     R1, =103          ; number of local variables
+    BL      enter           ; build new stack frame
+    B       testBody
+testBody
+    LDR     R5, =1
     ADD     R2, BP, #16
     LDR     R1, =0
     ADD     R2, R2, R1, LSL #2
     STR     R5, [R2]        ; a
-    ADD     R0, PC, #4      ; string address
-    BL      TastierPrintString
-    B       L5
-    DCB     "a should be 10 \n", 0
-    ALIGN
-L5
-    ADD     R0, PC, #4      ; string address
-    BL      TastierPrintString
-    B       L6
-    DCB     "a is ", 0
-    ALIGN
-L6
+    LDR     R5, =1
     ADD     R2, BP, #16
-    LDR     R1, =0
+    LDR     R1, =1
     ADD     R2, R2, R1, LSL #2
-    LDR     R5, [R2]        ; a
-    MOV     R0, R5
-    BL      TastierPrintInt
-    ADD     R0, PC, #4      ; string address
-    BL      TastierPrintString
-    B       L7
-    DCB     "\n", 0
-    ALIGN
-L7
+    STR     R5, [R2]        ; b
+    MOV     TOP, BP         ; reset top of stack
+    LDR     BP, [TOP,#12]   ; and stack base pointers
+    LDR     PC, [TOP]       ; return from test
+;ADR: 0 | KIND: VAR    | TYPE: INT    | LEVEL: 1 | NAME: a | SetVal: 0 | size2d: 1 | size1d: 1
+;ADR: 1 | KIND: VAR    | TYPE: INT    | LEVEL: 1 | NAME: b | SetVal: 0 | size2d: 1 | size1d: 1
+;ADR: 2 | KIND: ARRAY  | TYPE: INT    | LEVEL: 1 | NAME: lol | SetVal: 0 | size2d: 10 | size1d: 10
+;ADR: 102 | KIND: VAR    | TYPE: INT    | LEVEL: 1 | NAME: c | SetVal: 0 | size2d: 1 | size1d: 1
+mainline
     LDR     R5, =0
     ADD     R2, BP, #16
     LDR     R1, =0
@@ -159,15 +140,15 @@ L7
     MOVLT   R5, #1
     MOVGE   R5, #0
     MOVS    R5, R5          ; reset Z flag in CPSR
-    BEQ     L8              ; jump on condition false
+    BEQ     L5              ; jump on condition false
     ADD     R2, BP, #16
     LDR     R1, =0
     ADD     R2, R2, R1, LSL #2
     LDR     R5, [R2]        ; a
     LDR     R6, =10
     ADD     R5, R5, R6
-    B       L9
-L8
+    B       L6
+L5
     ADD     R2, BP, #16
     LDR     R1, =0
     ADD     R2, R2, R1, LSL #2
@@ -178,17 +159,17 @@ L8
     LDR     R5, [R2]        ; a
     LDR     R6, =40
     ADD     R5, R5, R6
-L9
+L6
     ADD     R2, BP, #16
     LDR     R1, =0
     ADD     R2, R2, R1, LSL #2
     STR     R5, [R2]        ; a
     ADD     R0, PC, #4      ; string address
     BL      TastierPrintString
-    B       L10
+    B       L7
     DCB     "a should be 40:", 0
     ALIGN
-L10
+L7
     ADD     R2, BP, #16
     LDR     R1, =0
     ADD     R2, R2, R1, LSL #2
@@ -197,10 +178,10 @@ L10
     BL      TastierPrintInt
     ADD     R0, PC, #4      ; string address
     BL      TastierPrintString
-    B       L11
+    B       L8
     DCB     "\n", 0
     ALIGN
-L11
+L8
     LDR     R5, =0
     ADD     R2, BP, #16
     LDR     R1, =0
@@ -212,15 +193,15 @@ L11
     MOVGT   R5, #1
     MOVLE   R5, #0
     MOVS    R5, R5          ; reset Z flag in CPSR
-    BEQ     L12              ; jump on condition false
+    BEQ     L9              ; jump on condition false
     ADD     R2, BP, #16
     LDR     R1, =0
     ADD     R2, R2, R1, LSL #2
     LDR     R5, [R2]        ; a
     LDR     R6, =10
     ADD     R5, R5, R6
-    B       L13
-L12
+    B       L10
+L9
     ADD     R2, BP, #16
     LDR     R1, =0
     ADD     R2, R2, R1, LSL #2
@@ -231,17 +212,17 @@ L12
     LDR     R5, [R2]        ; a
     LDR     R6, =40
     ADD     R5, R5, R6
-L13
+L10
     ADD     R2, BP, #16
     LDR     R1, =0
     ADD     R2, R2, R1, LSL #2
     STR     R5, [R2]        ; a
     ADD     R0, PC, #4      ; string address
     BL      TastierPrintString
-    B       L14
+    B       L11
     DCB     "a should be 10:", 0
     ALIGN
-L14
+L11
     ADD     R2, BP, #16
     LDR     R1, =0
     ADD     R2, R2, R1, LSL #2
@@ -250,23 +231,23 @@ L14
     BL      TastierPrintInt
     ADD     R0, PC, #4      ; string address
     BL      TastierPrintString
-    B       L15
+    B       L12
     DCB     "\n", 0
     ALIGN
-L15
+L12
     ADD     R0, PC, #4      ; string address
     BL      TastierPrintString
-    B       L16
+    B       L13
     DCB     "Loop from 0-4 \n", 0
     ALIGN
-L16
+L13
     LDR     R5, =0
     ADD     R2, BP, #16
     LDR     R1, =0
     ADD     R2, R2, R1, LSL #2
     STR     R5, [R2]        ; a
-    B       L18
-L17
+    B       L15
+L14
     ADD     R2, BP, #16
     LDR     R1, =0
     ADD     R2, R2, R1, LSL #2
@@ -277,7 +258,7 @@ L17
     LDR     R1, =0
     ADD     R2, R2, R1, LSL #2
     STR     R5, [R2]        ; a
-L18
+L15
     ADD     R2, BP, #16
     LDR     R1, =0
     ADD     R2, R2, R1, LSL #2
@@ -287,7 +268,7 @@ L18
     MOVLT   R5, #1
     MOVGE   R5, #0
     MOVS    R5, R5          ; reset Z flag in CPSR
-    BEQ     L19              ; jump on condition false
+    BEQ     L16              ; jump on condition false
     ADD     R2, BP, #16
     LDR     R1, =0
     ADD     R2, R2, R1, LSL #2
@@ -296,18 +277,39 @@ L18
     BL      TastierPrintInt
     ADD     R0, PC, #4      ; string address
     BL      TastierPrintString
-    B       L20
+    B       L17
     DCB     " ", 0
     ALIGN
-L20
-    B       L17
-L19
+L17
+    B       L14
+L16
     ADD     R0, PC, #4      ; string address
     BL      TastierPrintString
-    B       L21
+    B       L18
     DCB     "\n", 0
     ALIGN
-L21
+L18
+    ADD     R0, PC, #4      ; string address
+    BL      TastierPrintString
+    B       L19
+    DCB     "Enter value for i (or 0 to stop): ", 0
+    ALIGN
+L19
+    BL      TastierReadInt
+    LDR     R2, =0
+    STR     R0, [R4, R2, LSL #2] ; i
+L20
+    LDR     R2, =0
+    LDR     R5, [R4, R2, LSL #2] ; i
+    LDR     R6, =0
+    CMP     R5, R6
+    MOVGT   R5, #1
+    MOVLE   R5, #0
+    MOVS    R5, R5          ; reset Z flag in CPSR
+    BEQ     L21              ; jump on condition false
+    ADD     R0, PC, #4      ; store return address
+    STR     R0, [TOP]       ; in new stack frame
+    B       SumUp
     ADD     R0, PC, #4      ; string address
     BL      TastierPrintString
     B       L22
@@ -317,33 +319,13 @@ L22
     BL      TastierReadInt
     LDR     R2, =0
     STR     R0, [R4, R2, LSL #2] ; i
-L23
-    LDR     R2, =0
-    LDR     R5, [R4, R2, LSL #2] ; i
-    LDR     R6, =0
-    CMP     R5, R6
-    MOVGT   R5, #1
-    MOVLE   R5, #0
-    MOVS    R5, R5          ; reset Z flag in CPSR
-    BEQ     L24              ; jump on condition false
-    ADD     R0, PC, #4      ; store return address
-    STR     R0, [TOP]       ; in new stack frame
-    B       SumUp
-    ADD     R0, PC, #4      ; string address
-    BL      TastierPrintString
-    B       L25
-    DCB     "Enter value for i (or 0 to stop): ", 0
-    ALIGN
-L25
-    BL      TastierReadInt
-    LDR     R2, =0
-    STR     R0, [R4, R2, LSL #2] ; i
-    B       L23
-L24
+    B       L20
+L21
 StopTest
     B       StopTest
-;ADR: 0 | KIND: VAR    | TYPE: INT    | LEVEL: 1 | NAME: a | SetVal: 0
-;ADR: 1 | KIND: ARRAY  | TYPE: INT    | LEVEL: 1 | NAME: arr | SetVal: 0
-;ADR: 0 | KIND: VAR    | TYPE: INT    | LEVEL: 0 | NAME: i | SetVal: 0
-;ADR: 0 | KIND: PROC   | TYPE: UNDEF  | LEVEL: 0 | NAME: SumUp | SetVal: 0
-;ADR: 0 | KIND: PROC   | TYPE: UNDEF  | LEVEL: 0 | NAME: main | SetVal: 0
+;ADR: 0 | KIND: VAR    | TYPE: INT    | LEVEL: 1 | NAME: a | SetVal: 0 | size2d: 1 | size1d: 1
+;ADR: 1 | KIND: ARRAY  | TYPE: INT    | LEVEL: 1 | NAME: arr | SetVal: 0 | size2d: 1 | size1d: 3
+;ADR: 0 | KIND: VAR    | TYPE: INT    | LEVEL: 0 | NAME: i | SetVal: 0 | size2d: 1 | size1d: 1
+;ADR: 0 | KIND: PROC   | TYPE: UNDEF  | LEVEL: 0 | NAME: SumUp | SetVal: 0 | size2d: 1 | size1d: 1
+;ADR: 0 | KIND: PROC   | TYPE: UNDEF  | LEVEL: 0 | NAME: test | SetVal: 0 | size2d: 1 | size1d: 1
+;ADR: 0 | KIND: PROC   | TYPE: UNDEF  | LEVEL: 0 | NAME: main | SetVal: 0 | size2d: 1 | size1d: 1

@@ -9,6 +9,8 @@ namespace Tastier {
 public class Obj { // properties of declared symbol
    public string name; // its name
    public int size;
+   public int size1d;
+   public int size2d;
    public int setVal;  // Constant Value set or not
    public int kind;    // var, proc or scope
    public int type;    // its type if var (undef for proc)
@@ -79,7 +81,9 @@ public class SymbolTable {
             + type + " | LEVEL: " 
             + current.level + " | NAME: " 
             + current.name + " | SetVal: " 
-            + current.setVal);
+            + current.setVal + " | size2d: "
+            + current.size2d + " | size1d: "
+            + current.size1d);
          current = current.next;
       } 
       // update next available address in enclosing scope
@@ -131,14 +135,17 @@ public class SymbolTable {
       }
    }
 
+//TODO Make different kind of objects
 // create new object node in current scope
-   public Obj NewObj(string name, int kind, int type, int size=1) {
+   public Obj NewObj(string name, int kind, int type, int size=1, int size1d=1, int size2d=1) {
       Obj p, last; 
       Obj obj = new Obj();
       obj.name = name; obj.kind = kind;
       obj.type = type; obj.level = curLevel; 
       obj.next = null;
       obj.setVal = unsett;
+      obj.size1d = size1d;
+      obj.size2d = size2d;
       obj.size = size;
       p = topScope.locals; last = null;
       while (p != null) { 
@@ -153,7 +160,6 @@ public class SymbolTable {
 
       //Making space space for array by adjusting the nextAdr space.
       //Access via: (obj)array.adr+index;
-      //TODO 0 index?
       if(kind == array)
       {
         obj.adr = topScope.nextAdr;

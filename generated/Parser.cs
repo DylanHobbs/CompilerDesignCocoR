@@ -208,13 +208,16 @@ const int // object kinds
 				Expect(1);
 				RHSIndex = Convert.ToInt32(t.val); 
 				Expect(7);
+				if (la.kind == 6) {
+					Get();
+					Expect(1);
+					int side2d = Convert.ToInt32(t.val); 
+					
+					
+					Expect(7);
+				}
 				obj = tab.Find(name);
 				type = obj.type;
-				//TODO check type checking
-				// if(type != obj.type){
-				//   SemErr("Cannot assign type " + type + " to array type " + obj.type);
-				//   return;
-				// }
 				
 				if(RHSIndex < 0 || RHSIndex > obj.size){
 				 SemErr(obj.name + ": Index [" + RHSIndex + "] out of bounds[" + obj.size + "]");
@@ -332,7 +335,7 @@ const int // object kinds
 	}
 
 	void ProcDecl(string pName) {
-		Obj obj; string procName; 
+		Obj obj; string procName; string name; 
 		Expect(17);
 		Ident(out procName);
 		obj = tab.NewObj(procName, proc, undef);
@@ -342,8 +345,7 @@ const int // object kinds
 		  else SemErr("main not at lexic level 0");
 		tab.OpenScope();
 		
-		Expect(10);
-		Expect(11);
+		ParamsDecl();
 		Expect(18);
 		while (StartOf(3)) {
 			if (la.kind == 39 || la.kind == 40) {
@@ -376,6 +378,25 @@ const int // object kinds
 		
 	}
 
+	void ParamsDecl() {
+		string name; int type;
+		Expect(10);
+		if (la.kind == 39 || la.kind == 40) {
+			Type(out type);
+			Ident(out name);
+			tab.NewObj(name, var, type); 
+			while (la.kind == 41) {
+				Get();
+				Type(out type);
+				Ident(out name);
+				tab.NewObj(name, var, type); 
+			}
+			Expect(11);
+		} else if (la.kind == 11) {
+			Get();
+		} else SynErr(50);
+	}
+
 	void VarDecl() {
 		string name; int type; 
 		Type(out type);
@@ -404,19 +425,27 @@ const int // object kinds
 	}
 
 	void ArrayDecl() {
-		string name; int type; int kind; int size; Obj obj;
+		string name; int type; int kind; int size; int size1d; int size2d=1; Obj obj;
 		Expect(43);
 		kind = array; 
 		Type(out type);
 		Ident(out name);
+		Expect(6);
+		Expect(1);
+		size = Convert.ToInt32(t.val);
+		size1d = size;
+		
+		Expect(7);
 		if (la.kind == 6) {
 			Get();
 			Expect(1);
-			size = Convert.ToInt32(t.val);
-			obj = tab.NewObj(name, kind, type, size);
+			size2d = Convert.ToInt32(t.val);
+			size = size * size2d;
 			
 			Expect(7);
 		}
+		obj = tab.NewObj(name, kind, type, size, size1d, size2d);
+		
 		Expect(27);
 	}
 
@@ -495,7 +524,7 @@ const int // object kinds
 					}
 					
 					Expect(27);
-				} else SynErr(50);
+				} else SynErr(51);
 			} else if (la.kind == 10) {
 				Get();
 				Expect(11);
@@ -504,7 +533,7 @@ const int // object kinds
 				  gen.Call(name);
 				else SemErr("object is not a procedure");
 				
-			} else SynErr(51);
+			} else SynErr(52);
 			break;
 		}
 		case 30: {
@@ -607,7 +636,7 @@ const int // object kinds
 			} else if (la.kind == 3) {
 				String(out text);
 				gen.WriteString(text); 
-			} else SynErr(52);
+			} else SynErr(53);
 			Expect(27);
 			break;
 		}
@@ -640,7 +669,7 @@ const int // object kinds
 			Expect(19);
 			break;
 		}
-		default: SynErr(53); break;
+		default: SynErr(54); break;
 		}
 	}
 
@@ -687,7 +716,7 @@ const int // object kinds
 		} else if (la.kind == 40) {
 			Get();
 			type = boolean; 
-		} else SynErr(54);
+		} else SynErr(55);
 	}
 
 
@@ -773,11 +802,12 @@ public class Errors {
 			case 47: s = "invalid Primary"; break;
 			case 48: s = "invalid Primary"; break;
 			case 49: s = "invalid MulOp"; break;
-			case 50: s = "invalid Stat"; break;
+			case 50: s = "invalid ParamsDecl"; break;
 			case 51: s = "invalid Stat"; break;
 			case 52: s = "invalid Stat"; break;
 			case 53: s = "invalid Stat"; break;
-			case 54: s = "invalid Type"; break;
+			case 54: s = "invalid Stat"; break;
+			case 55: s = "invalid Type"; break;
 
 			default: s = "error " + n; break;
 		}
