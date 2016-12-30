@@ -345,11 +345,21 @@ Stat                     (. int type; string name; Obj obj; int reg=0; int index
                  
   )
 
-  | '(' ')' ';'          (.
+  | '(' 
+   (
+    Ident<out name>        (.  .)
+      {
+        ','
+        Ident<out name>    (.  .)
+      } 
+    ')' ';'
+     
+   | ')' ';'          (.
                             if (obj.kind == proc)
                                gen.Call(name);
                             else SemErr("object is not a procedure");
                          .)
+   )
   )
 
 | "for"                 (.

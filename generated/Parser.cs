@@ -353,7 +353,7 @@ const int // object kinds
 		ParamsDecl();
 		Expect(18);
 		while (StartOf(3)) {
-			if (la.kind == 39 || la.kind == 40) {
+			if (la.kind == 40 || la.kind == 41) {
 				VarDecl();
 			} else if (la.kind == 42) {
 				ConstDecl();
@@ -386,11 +386,11 @@ const int // object kinds
 	void ParamsDecl() {
 		string name; int type;
 		Expect(10);
-		if (la.kind == 39 || la.kind == 40) {
+		if (la.kind == 40 || la.kind == 41) {
 			Type(out type);
 			Ident(out name);
 			tab.NewObj(name, var, type); 
-			while (la.kind == 41) {
+			while (la.kind == 30) {
 				Get();
 				Type(out type);
 				Ident(out name);
@@ -407,7 +407,7 @@ const int // object kinds
 		Type(out type);
 		Ident(out name);
 		tab.NewObj(name, var, type); 
-		while (la.kind == 41) {
+		while (la.kind == 30) {
 			Get();
 			Ident(out name);
 			tab.NewObj(name, var, type); 
@@ -421,7 +421,7 @@ const int // object kinds
 		Type(out type);
 		Ident(out name);
 		tab.NewObj(name, constant, type); 
-		while (la.kind == 41) {
+		while (la.kind == 30) {
 			Get();
 			Ident(out name);
 			tab.NewObj(name, constant, type); 
@@ -540,16 +540,28 @@ const int // object kinds
 				} else SynErr(51);
 			} else if (la.kind == 10) {
 				Get();
-				Expect(11);
-				Expect(27);
-				if (obj.kind == proc)
-				  gen.Call(name);
-				else SemErr("object is not a procedure");
-				
-			} else SynErr(52);
+				if (la.kind == 2) {
+					Ident(out name);
+					
+					while (la.kind == 30) {
+						Get();
+						Ident(out name);
+						
+					}
+					Expect(11);
+					Expect(27);
+				} else if (la.kind == 11) {
+					Get();
+					Expect(27);
+					if (obj.kind == proc)
+					  gen.Call(name);
+					else SemErr("object is not a procedure");
+					
+				} else SynErr(52);
+			} else SynErr(53);
 			break;
 		}
-		case 30: {
+		case 31: {
 			Get();
 			int l1, l2, l3;
 			l2=0;
@@ -571,14 +583,14 @@ const int // object kinds
 			}
 			else SemErr("boolean type expected");
 			
-			Expect(31);
+			Expect(32);
 			Stat();
 			gen.Branch(l1);
 			gen.Label(l2);
 			
 			break;
 		}
-		case 32: {
+		case 33: {
 			Get();
 			int l1, l2; l1 = 0; 
 			Expr(out reg, out type);
@@ -593,14 +605,14 @@ const int // object kinds
 			gen.Branch(l2);
 			gen.Label(l1);
 			
-			if (la.kind == 33) {
+			if (la.kind == 34) {
 				Get();
 				Stat();
 			}
 			gen.Label(l2); 
 			break;
 		}
-		case 34: {
+		case 35: {
 			Get();
 			int l1, l2;
 			l1 = gen.NewLabel();
@@ -619,7 +631,7 @@ const int // object kinds
 			
 			break;
 		}
-		case 35: {
+		case 36: {
 			Get();
 			Ident(out name);
 			Expect(27);
@@ -634,7 +646,7 @@ const int // object kinds
 			
 			break;
 		}
-		case 36: {
+		case 37: {
 			Get();
 			string text; 
 			if (StartOf(5)) {
@@ -649,11 +661,11 @@ const int // object kinds
 			} else if (la.kind == 3) {
 				String(out text);
 				gen.WriteString(text); 
-			} else SynErr(53);
+			} else SynErr(54);
 			Expect(27);
 			break;
 		}
-		case 37: {
+		case 38: {
 			Get();
 			Expr(out reg, out type);
 			switch (type) {
@@ -671,7 +683,7 @@ const int // object kinds
 			while (StartOf(6)) {
 				if (StartOf(4)) {
 					Stat();
-				} else if (la.kind == 39 || la.kind == 40) {
+				} else if (la.kind == 40 || la.kind == 41) {
 					VarDecl();
 				} else if (la.kind == 42) {
 					ConstDecl();
@@ -682,7 +694,7 @@ const int // object kinds
 			Expect(19);
 			break;
 		}
-		default: SynErr(54); break;
+		default: SynErr(55); break;
 		}
 	}
 
@@ -701,12 +713,12 @@ const int // object kinds
 
 	void Tastier() {
 		string pName; 
-		Expect(38);
+		Expect(39);
 		Ident(out pName);
 		tab.OpenScope(); 
 		Expect(18);
 		while (StartOf(3)) {
-			if (la.kind == 39 || la.kind == 40) {
+			if (la.kind == 40 || la.kind == 41) {
 				VarDecl();
 			} else if (la.kind == 42) {
 				ConstDecl();
@@ -723,13 +735,13 @@ const int // object kinds
 
 	void Type(out int type) {
 		type = undef; 
-		if (la.kind == 39) {
+		if (la.kind == 40) {
 			Get();
 			type = integer; 
-		} else if (la.kind == 40) {
+		} else if (la.kind == 41) {
 			Get();
 			type = boolean; 
-		} else SynErr(55);
+		} else SynErr(56);
 	}
 
 
@@ -746,11 +758,11 @@ const int // object kinds
 	static readonly bool[,] set = {
 		{T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x},
 		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,T,T,T, T,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x},
-		{x,x,T,x, T,T,x,x, x,x,x,T, T,T,T,T, T,x,T,x, T,T,T,T, T,T,x,T, T,T,T,T, T,x,T,T, T,T,x,x, x,x,x,x, x,x},
-		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,T, T,x,T,T, x,x},
-		{x,x,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,x, x,x,x,x, x,x,x,x, x,x,T,x, T,x,T,T, T,T,x,x, x,x,x,x, x,x},
+		{x,x,T,x, T,T,x,x, x,x,x,T, T,T,T,T, T,x,T,x, T,T,T,T, T,T,x,T, T,T,x,T, T,T,x,T, T,T,T,x, x,x,x,x, x,x},
+		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,T,T,T, x,x},
+		{x,x,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,x, x,x,x,x, x,x,x,x, x,x,x,T, x,T,x,T, T,T,T,x, x,x,x,x, x,x},
 		{x,T,T,x, x,T,x,x, T,T,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x},
-		{x,x,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,x, x,x,x,x, x,x,x,x, x,x,T,x, T,x,T,T, T,T,x,T, T,x,T,T, x,x},
+		{x,x,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,x, x,x,x,x, x,x,x,x, x,x,x,T, x,T,x,T, T,T,T,x, T,T,T,T, x,x},
 		{x,x,x,x, x,x,x,x, x,x,x,x, T,T,T,T, T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x}
 
 	};
@@ -795,18 +807,18 @@ public class Errors {
 			case 27: s = "\";\" expected"; break;
 			case 28: s = "\"?\" expected"; break;
 			case 29: s = "\":\" expected"; break;
-			case 30: s = "\"for\" expected"; break;
-			case 31: s = "\"do\" expected"; break;
-			case 32: s = "\"if\" expected"; break;
-			case 33: s = "\"else\" expected"; break;
-			case 34: s = "\"while\" expected"; break;
-			case 35: s = "\"read\" expected"; break;
-			case 36: s = "\"write\" expected"; break;
-			case 37: s = "\"writeln\" expected"; break;
-			case 38: s = "\"program\" expected"; break;
-			case 39: s = "\"int\" expected"; break;
-			case 40: s = "\"bool\" expected"; break;
-			case 41: s = "\",\" expected"; break;
+			case 30: s = "\",\" expected"; break;
+			case 31: s = "\"for\" expected"; break;
+			case 32: s = "\"do\" expected"; break;
+			case 33: s = "\"if\" expected"; break;
+			case 34: s = "\"else\" expected"; break;
+			case 35: s = "\"while\" expected"; break;
+			case 36: s = "\"read\" expected"; break;
+			case 37: s = "\"write\" expected"; break;
+			case 38: s = "\"writeln\" expected"; break;
+			case 39: s = "\"program\" expected"; break;
+			case 40: s = "\"int\" expected"; break;
+			case 41: s = "\"bool\" expected"; break;
 			case 42: s = "\"const\" expected"; break;
 			case 43: s = "\"array\" expected"; break;
 			case 44: s = "??? expected"; break;
@@ -820,7 +832,8 @@ public class Errors {
 			case 52: s = "invalid Stat"; break;
 			case 53: s = "invalid Stat"; break;
 			case 54: s = "invalid Stat"; break;
-			case 55: s = "invalid Type"; break;
+			case 55: s = "invalid Stat"; break;
+			case 56: s = "invalid Type"; break;
 
 			default: s = "error " + n; break;
 		}

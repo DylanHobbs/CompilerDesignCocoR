@@ -134,55 +134,145 @@ L4
 ;ADR: 1 | KIND: VAR    | TYPE: INT    | LEVEL: 1 | NAME: sum | SetVal: 0 | size2d: 1 | size1d: 1
 ;ADR: 0 | KIND: PROC   | TYPE: UNDEF  | LEVEL: 1 | NAME: Subtract | SetVal: 0 | size2d: 1 | size1d: 1
 ;ADR: 0 | KIND: PROC   | TYPE: UNDEF  | LEVEL: 1 | NAME: Add | SetVal: 0 | size2d: 1 | size1d: 1
-test
+arrayTest
     LDR     R0, =1          ; current lexic level
-    LDR     R1, =12          ; number of local variables
+    LDR     R1, =4          ; number of local variables
     BL      enter           ; build new stack frame
-    B       testBody
-testBody
-    LDR     R5, =1
-    ADD     R2, BP, #16
-    LDR     R1, =0
-    ADD     R2, R2, R1, LSL #2
-    STR     R5, [R2]        ; a
-    LDR     R5, =1
-    ADD     R2, BP, #16
-    LDR     R1, =1
-    ADD     R2, R2, R1, LSL #2
-    STR     R5, [R2]        ; b
-    LDR     R5, =0
-    ADD     R2, BP, #16
-    LDR     R1, =2
-    ADD     R2, R2, R1, LSL #2
-    STR     R5, [R2]        ; lol
-    LDR     R5, =9
-    ADD     R2, BP, #16
-    LDR     R1, =10
-    ADD     R2, R2, R1, LSL #2
-    STR     R5, [R2]        ; lol
+    B       arrayTestBody
+arrayTestBody
     ADD     R0, PC, #4      ; string address
     BL      TastierPrintString
     B       L5
-    DCB     "Should be 9", 0
+    DCB     "------------------------------\n", 0
     ALIGN
 L5
+    ADD     R0, PC, #4      ; string address
+    BL      TastierPrintString
+    B       L6
+    DCB     "----------Array Test----------\n", 0
+    ALIGN
+L6
+    ADD     R0, PC, #4      ; string address
+    BL      TastierPrintString
+    B       L7
+    DCB     "------------------------------\n", 0
+    ALIGN
+L7
+    LDR     R5, =0
     ADD     R2, BP, #16
-    LDR     R1, =10
+    LDR     R1, =0
     ADD     R2, R2, R1, LSL #2
-    LDR     R5, [R2]        ; lol
+    STR     R5, [R2]        ; arr
+    LDR     R5, =10
+    ADD     R2, BP, #16
+    LDR     R1, =1
+    ADD     R2, R2, R1, LSL #2
+    STR     R5, [R2]        ; arr
+    ADD     R2, BP, #16
+    LDR     R1, =1
+    ADD     R2, R2, R1, LSL #2
+    LDR     R5, [R2]        ; arr
+    ADD     R2, BP, #16
+    LDR     R1, =3
+    ADD     R2, R2, R1, LSL #2
+    STR     R5, [R2]        ; temp
+    ADD     R0, PC, #4      ; string address
+    BL      TastierPrintString
+    B       L8
+    DCB     "temp should be 10 \n", 0
+    ALIGN
+L8
+    ADD     R0, PC, #4      ; string address
+    BL      TastierPrintString
+    B       L9
+    DCB     "temp is ", 0
+    ALIGN
+L9
+    ADD     R2, BP, #16
+    LDR     R1, =3
+    ADD     R2, R2, R1, LSL #2
+    LDR     R5, [R2]        ; temp
     MOV     R0, R5
     BL      TastierPrintIntLf
     MOV     TOP, BP         ; reset top of stack
     LDR     BP, [TOP,#12]   ; and stack base pointers
-    LDR     PC, [TOP]       ; return from test
-;ADR: 0 | KIND: VAR    | TYPE: INT    | LEVEL: 1 | NAME: a | SetVal: 0 | size2d: 1 | size1d: 1
-;ADR: 1 | KIND: VAR    | TYPE: INT    | LEVEL: 1 | NAME: b | SetVal: 0 | size2d: 1 | size1d: 1
-;ADR: 2 | KIND: ARRAY  | TYPE: INT    | LEVEL: 1 | NAME: lol | SetVal: 0 | size2d: 3 | size1d: 3
-;ADR: 11 | KIND: VAR    | TYPE: INT    | LEVEL: 1 | NAME: c | SetVal: 0 | size2d: 1 | size1d: 1
-mainline
-    ADD     R0, PC, #4      ; store return address
-    STR     R0, [TOP]       ; in new stack frame
-    B       test
+    LDR     PC, [TOP]       ; return from arrayTest
+;ADR: 0 | KIND: ARRAY  | TYPE: INT    | LEVEL: 1 | NAME: arr | SetVal: 0 | size2d: 1 | size1d: 3
+;ADR: 3 | KIND: VAR    | TYPE: INT    | LEVEL: 1 | NAME: temp | SetVal: 0 | size2d: 1 | size1d: 1
+array2DTest
+    LDR     R0, =1          ; current lexic level
+    LDR     R1, =9          ; number of local variables
+    BL      enter           ; build new stack frame
+    B       array2DTestBody
+array2DTestBody
+    ADD     R0, PC, #4      ; string address
+    BL      TastierPrintString
+    B       L10
+    DCB     "------------------------------\n", 0
+    ALIGN
+L10
+    ADD     R0, PC, #4      ; string address
+    BL      TastierPrintString
+    B       L11
+    DCB     "-----Start 2D Array Test------\n", 0
+    ALIGN
+L11
+    ADD     R0, PC, #4      ; string address
+    BL      TastierPrintString
+    B       L12
+    DCB     "------------------------------\n", 0
+    ALIGN
+L12
+    LDR     R5, =0
+    ADD     R2, BP, #16
+    LDR     R1, =0
+    ADD     R2, R2, R1, LSL #2
+    STR     R5, [R2]        ; lolarray
+    LDR     R5, =9
+    ADD     R2, BP, #16
+    LDR     R1, =8
+    ADD     R2, R2, R1, LSL #2
+    STR     R5, [R2]        ; lolarray
+    ADD     R0, PC, #4      ; string address
+    BL      TastierPrintString
+    B       L13
+    DCB     "Should be 9 \n", 0
+    ALIGN
+L13
+    ADD     R2, BP, #16
+    LDR     R1, =8
+    ADD     R2, R2, R1, LSL #2
+    LDR     R5, [R2]        ; lolarray
+    MOV     R0, R5
+    BL      TastierPrintIntLf
+    MOV     TOP, BP         ; reset top of stack
+    LDR     BP, [TOP,#12]   ; and stack base pointers
+    LDR     PC, [TOP]       ; return from array2DTest
+;ADR: 0 | KIND: ARRAY  | TYPE: INT    | LEVEL: 1 | NAME: lolarray | SetVal: 0 | size2d: 3 | size1d: 3
+testConditionalAssignment
+    LDR     R0, =1          ; current lexic level
+    LDR     R1, =1          ; number of local variables
+    BL      enter           ; build new stack frame
+    B       testConditionalAssignmentBody
+testConditionalAssignmentBody
+    ADD     R0, PC, #4      ; string address
+    BL      TastierPrintString
+    B       L14
+    DCB     "------------------------------\n", 0
+    ALIGN
+L14
+    ADD     R0, PC, #4      ; string address
+    BL      TastierPrintString
+    B       L15
+    DCB     "--Conditional Assigment Test--\n", 0
+    ALIGN
+L15
+    ADD     R0, PC, #4      ; string address
+    BL      TastierPrintString
+    B       L16
+    DCB     "------------------------------\n", 0
+    ALIGN
+L16
     LDR     R5, =0
     ADD     R2, BP, #16
     LDR     R1, =0
@@ -194,15 +284,15 @@ mainline
     MOVLT   R5, #1
     MOVGE   R5, #0
     MOVS    R5, R5          ; reset Z flag in CPSR
-    BEQ     L6              ; jump on condition false
+    BEQ     L17              ; jump on condition false
     ADD     R2, BP, #16
     LDR     R1, =0
     ADD     R2, R2, R1, LSL #2
     LDR     R5, [R2]        ; a
     LDR     R6, =10
     ADD     R5, R5, R6
-    B       L7
-L6
+    B       L18
+L17
     ADD     R2, BP, #16
     LDR     R1, =0
     ADD     R2, R2, R1, LSL #2
@@ -213,17 +303,17 @@ L6
     LDR     R5, [R2]        ; a
     LDR     R6, =40
     ADD     R5, R5, R6
-L7
+L18
     ADD     R2, BP, #16
     LDR     R1, =0
     ADD     R2, R2, R1, LSL #2
     STR     R5, [R2]        ; a
     ADD     R0, PC, #4      ; string address
     BL      TastierPrintString
-    B       L8
+    B       L19
     DCB     "a should be 40:", 0
     ALIGN
-L8
+L19
     ADD     R2, BP, #16
     LDR     R1, =0
     ADD     R2, R2, R1, LSL #2
@@ -232,10 +322,10 @@ L8
     BL      TastierPrintInt
     ADD     R0, PC, #4      ; string address
     BL      TastierPrintString
-    B       L9
+    B       L20
     DCB     "\n", 0
     ALIGN
-L9
+L20
     LDR     R5, =0
     ADD     R2, BP, #16
     LDR     R1, =0
@@ -247,15 +337,15 @@ L9
     MOVGT   R5, #1
     MOVLE   R5, #0
     MOVS    R5, R5          ; reset Z flag in CPSR
-    BEQ     L10              ; jump on condition false
+    BEQ     L21              ; jump on condition false
     ADD     R2, BP, #16
     LDR     R1, =0
     ADD     R2, R2, R1, LSL #2
     LDR     R5, [R2]        ; a
     LDR     R6, =10
     ADD     R5, R5, R6
-    B       L11
-L10
+    B       L22
+L21
     ADD     R2, BP, #16
     LDR     R1, =0
     ADD     R2, R2, R1, LSL #2
@@ -266,42 +356,64 @@ L10
     LDR     R5, [R2]        ; a
     LDR     R6, =40
     ADD     R5, R5, R6
-L11
+L22
     ADD     R2, BP, #16
     LDR     R1, =0
     ADD     R2, R2, R1, LSL #2
     STR     R5, [R2]        ; a
     ADD     R0, PC, #4      ; string address
     BL      TastierPrintString
-    B       L12
+    B       L23
     DCB     "a should be 10:", 0
     ALIGN
-L12
+L23
     ADD     R2, BP, #16
     LDR     R1, =0
     ADD     R2, R2, R1, LSL #2
     LDR     R5, [R2]        ; a
     MOV     R0, R5
-    BL      TastierPrintInt
+    BL      TastierPrintIntLf
+    MOV     TOP, BP         ; reset top of stack
+    LDR     BP, [TOP,#12]   ; and stack base pointers
+    LDR     PC, [TOP]       ; return from testConditionalAssignment
+;ADR: 0 | KIND: VAR    | TYPE: INT    | LEVEL: 1 | NAME: a | SetVal: 0 | size2d: 1 | size1d: 1
+testForLoop
+    LDR     R0, =1          ; current lexic level
+    LDR     R1, =1          ; number of local variables
+    BL      enter           ; build new stack frame
+    B       testForLoopBody
+testForLoopBody
     ADD     R0, PC, #4      ; string address
     BL      TastierPrintString
-    B       L13
-    DCB     "\n", 0
+    B       L24
+    DCB     "------------------------------\n", 0
     ALIGN
-L13
+L24
     ADD     R0, PC, #4      ; string address
     BL      TastierPrintString
-    B       L14
+    B       L25
+    DCB     "--------For Loop Test---------\n", 0
+    ALIGN
+L25
+    ADD     R0, PC, #4      ; string address
+    BL      TastierPrintString
+    B       L26
+    DCB     "------------------------------\n", 0
+    ALIGN
+L26
+    ADD     R0, PC, #4      ; string address
+    BL      TastierPrintString
+    B       L27
     DCB     "Loop from 0-4 \n", 0
     ALIGN
-L14
+L27
     LDR     R5, =0
     ADD     R2, BP, #16
     LDR     R1, =0
     ADD     R2, R2, R1, LSL #2
     STR     R5, [R2]        ; a
-    B       L16
-L15
+    B       L29
+L28
     ADD     R2, BP, #16
     LDR     R1, =0
     ADD     R2, R2, R1, LSL #2
@@ -312,7 +424,7 @@ L15
     LDR     R1, =0
     ADD     R2, R2, R1, LSL #2
     STR     R5, [R2]        ; a
-L16
+L29
     ADD     R2, BP, #16
     LDR     R1, =0
     ADD     R2, R2, R1, LSL #2
@@ -322,7 +434,7 @@ L16
     MOVLT   R5, #1
     MOVGE   R5, #0
     MOVS    R5, R5          ; reset Z flag in CPSR
-    BEQ     L17              ; jump on condition false
+    BEQ     L30              ; jump on condition false
     ADD     R2, BP, #16
     LDR     R1, =0
     ADD     R2, R2, R1, LSL #2
@@ -331,28 +443,48 @@ L16
     BL      TastierPrintInt
     ADD     R0, PC, #4      ; string address
     BL      TastierPrintString
-    B       L18
+    B       L31
     DCB     " ", 0
     ALIGN
-L18
-    B       L15
-L17
+L31
+    B       L28
+L30
     ADD     R0, PC, #4      ; string address
     BL      TastierPrintString
-    B       L19
+    B       L32
     DCB     "\n", 0
     ALIGN
-L19
+L32
+    MOV     TOP, BP         ; reset top of stack
+    LDR     BP, [TOP,#12]   ; and stack base pointers
+    LDR     PC, [TOP]       ; return from testForLoop
+;ADR: 0 | KIND: VAR    | TYPE: INT    | LEVEL: 1 | NAME: a | SetVal: 0 | size2d: 1 | size1d: 1
+mainline
+    LDR     R5, =1
+    LDR     R2, =0
+    STR     R5, [R4, R2, LSL #2] ; i
+    ADD     R0, PC, #4      ; store return address
+    STR     R0, [TOP]       ; in new stack frame
+    B       arrayTest
+    ADD     R0, PC, #4      ; store return address
+    STR     R0, [TOP]       ; in new stack frame
+    B       array2DTest
+    ADD     R0, PC, #4      ; store return address
+    STR     R0, [TOP]       ; in new stack frame
+    B       testConditionalAssignment
+    ADD     R0, PC, #4      ; store return address
+    STR     R0, [TOP]       ; in new stack frame
+    B       testForLoop
     ADD     R0, PC, #4      ; string address
     BL      TastierPrintString
-    B       L20
+    B       L33
     DCB     "Enter value for i (or 0 to stop): ", 0
     ALIGN
-L20
+L33
     BL      TastierReadInt
     LDR     R2, =0
     STR     R0, [R4, R2, LSL #2] ; i
-L21
+L34
     LDR     R2, =0
     LDR     R5, [R4, R2, LSL #2] ; i
     LDR     R6, =0
@@ -360,28 +492,29 @@ L21
     MOVGT   R5, #1
     MOVLE   R5, #0
     MOVS    R5, R5          ; reset Z flag in CPSR
-    BEQ     L22              ; jump on condition false
+    BEQ     L35              ; jump on condition false
     ADD     R0, PC, #4      ; store return address
     STR     R0, [TOP]       ; in new stack frame
     B       SumUp
     ADD     R0, PC, #4      ; string address
     BL      TastierPrintString
-    B       L23
+    B       L36
     DCB     "Enter value for i (or 0 to stop): ", 0
     ALIGN
-L23
+L36
     BL      TastierReadInt
     LDR     R2, =0
     STR     R0, [R4, R2, LSL #2] ; i
-    B       L21
-L22
+    B       L34
+L35
 StopTest
     B       StopTest
-;ADR: 0 | KIND: VAR    | TYPE: INT    | LEVEL: 1 | NAME: a | SetVal: 0 | size2d: 1 | size1d: 1
-;ADR: 1 | KIND: ARRAY  | TYPE: INT    | LEVEL: 1 | NAME: arr | SetVal: 0 | size2d: 1 | size1d: 3
 ;ADR: 0 | KIND: VAR    | TYPE: INT    | LEVEL: 0 | NAME: i | SetVal: 0 | size2d: 1 | size1d: 1
 ;ADR: 0 | KIND: PROC   | TYPE: UNDEF  | LEVEL: 0 | NAME: SumUp | SetVal: 0 | size2d: 1 | size1d: 1
-;ADR: 0 | KIND: PROC   | TYPE: UNDEF  | LEVEL: 0 | NAME: test | SetVal: 0 | size2d: 1 | size1d: 1
+;ADR: 0 | KIND: PROC   | TYPE: UNDEF  | LEVEL: 0 | NAME: arrayTest | SetVal: 0 | size2d: 1 | size1d: 1
+;ADR: 0 | KIND: PROC   | TYPE: UNDEF  | LEVEL: 0 | NAME: array2DTest | SetVal: 0 | size2d: 1 | size1d: 1
+;ADR: 0 | KIND: PROC   | TYPE: UNDEF  | LEVEL: 0 | NAME: testConditionalAssignment | SetVal: 0 | size2d: 1 | size1d: 1
+;ADR: 0 | KIND: PROC   | TYPE: UNDEF  | LEVEL: 0 | NAME: testForLoop | SetVal: 0 | size2d: 1 | size1d: 1
 ;ADR: 0 | KIND: PROC   | TYPE: UNDEF  | LEVEL: 0 | NAME: main | SetVal: 0 | size2d: 1 | size1d: 1
 
 ; Subroutine enter

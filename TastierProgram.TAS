@@ -29,36 +29,45 @@ program Test {
       writeln sum;
    }
 
-   void test(){
-      int a;
-      int b;
-      array int lol[3][3];
-      int c;
+   void arrayTest() {
+      array int arr[3];
+      int temp;
 
-      a := 1;
-      b := 1;
-      
-      lol[0][0] := 0;
-      lol[2][2] := 9;
+      write "------------------------------\n";
+      write "----------Array Test----------\n";
+      write "------------------------------\n";
 
-      write "Should be 9";
-      writeln lol[2][2];
+      arr[0] := 0;
+      arr[1] := 10;
+      temp := arr[1];
+      write "temp should be 10 \n";
+      write "temp is ";
+      writeln temp;
    }
 
-   void main() {
-      int a;
-      array int arr[3];
-      test();
+   void array2DTest() {
+      array int lolarray[3][3];
 
-      //Array Access
-      //arr[0] := 0;
-      //arr[1] := 10;
-      //a := arr[1];
-      //write "a should be 10 \n";
-      //write "a is ";
-      //write a; write "\n";
+      write "------------------------------\n";
+      write "-----Start 2D Array Test------\n";
+      write "------------------------------\n";
+      
+      lolarray[0][0] := 0;
+      lolarray[2][2] := 9;
+
+      write "Should be 9 \n";
+      writeln lolarray[2][2];
+   }
+
+   void testConditionalAssignment() {
+      int a;
+
+      write "------------------------------\n";
+      write "--Conditional Assigment Test--\n";
+      write "------------------------------\n";
 
       a := 0;
+
       //Conditional true
       a := 1<0 ? a+10: a+40;
       write "a should be 40:";
@@ -68,16 +77,45 @@ program Test {
       //Conditional false
       a := 1>0 ? a+10: a+40;
       write "a should be 10:";
-      write a; write "\n";
+      writeln a;
+   }
 
+   void testForLoop() {
+      int a;
+      write "------------------------------\n";
+      write "--------For Loop Test---------\n";
+      write "------------------------------\n";
       //For loop
+
       write "Loop from 0-4 \n";
       for a:=0; a := a + 1; a < 5
          do {
             write a; write " ";
          }
       write "\n";
+   }
 
+
+   void main() {
+      //Constant Test
+      //This test tries to assign to a constant and fails, as is desiered. 
+      //Second assignmnet to I is left commented to allow code to run.
+      i := 1;
+      //i := 0;
+
+      //1D array assignemnt and retrieve
+      arrayTest();
+
+      //2D array
+      array2DTest();
+
+      //Conditional Assignment
+      testConditionalAssignment();
+
+      //For Loop
+      testForLoop();
+
+      //Resume Sum up program given
       write "Enter value for i (or 0 to stop): ";
       read i;
       while i > 0 {
